@@ -1,0 +1,28 @@
+{
+  "name": "winner-only-disclosure-js-protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JavaScript protocol orchestration, integration, and reference implementation",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:threshold-release": "node --test test/five_of_five_threshold.test.js test/five_of_five_final_release.test.js test/compact_transcript.test.js",
+    "test:group": "node --test test/group_oracle.test.js",
+    "test:group:reference": "node scripts/circomlib_crosscheck.js",
+    "test:cross-language": "node scripts/test_native_gate_compatibility.js",
+    "build:ballot": "node ../../scripts/setup/build_ballot_artifacts.js",
+    "replay:single-gate": "node scripts/replay_single_gate_fixture.js",
+    "run:local-scale": "node scripts/run_local_scale.js",
+    "replay:local": "node scripts/replay_local_run.js",
+    "run:sepolia": "node scripts/run_sepolia_pipeline.js",
+    "replay:sepolia": "node scripts/replay_sepolia_public.js",
+    "compare:oracle": "node scripts/compare_replay_with_oracle.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "circomlibjs": "0.1.7",
+    "ethers": "6.13.0",
+    "snarkjs": "0.7.6"
+  }
+}

@@ -1,0 +1,61 @@
+# Dependency and compiler outputs
+node_modules/
+target/
+dist/
+build/
+cache/
+coverage/
+artifacts/contracts/
+artifacts/build-info/
+implementation/arbitrum/artifacts/
+implementation/arbitrum/cache/
+circuits/node_modules/
+circuits/build/
+circuits/target/
+
+# Local credentials and wallet material
+.env
+.env.*
+*.pem
+*.key
+*.keystore
+*.mnemonic
+*.wallet
+
+# Local runtime and scratch data
+*.log
+*.tmp
+*.swp
+.DS_Store
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+local-chain/
+hardhat-deployments/
+rpc-state/
+benchmark-scratch/
+artifacts/local_five_trustee_*/
+artifacts/*_oracle/
+artifacts/run_*/
+
+# Generated witness/proving artifacts and bulky transcripts
+*.wtns
+*.r1cs
+*.sym
+*.ptau
+*.zkey
+*.wasm
+*.jsonl
+gate_transcript.compact.bin
+artifacts/public_sepolia_*/
+native_gate_records.jsonl
+cleartext_oracle_inputs.json
+
+# Secret or temporary setup outputs
+implementation/logs/
+*.seed
+*.secret
+
+# Generated run bundles may be emitted beneath the backend package too
+**/artifacts/local_five_trustee_*/

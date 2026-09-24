@@ -1,0 +1,15 @@
+{
+  "schema": "-CGY-REFERENCE-CONFIG/V1",
+  "profile": "winner-only-disclosure/five-of-five/v1",
+  "trustees": 5,
+  "shamirDegree": 4,
+  "decryptionThreshold": 5,
+  "referenceBallotCount": 8,
+  "voteBits": 8,
+  "aggregateBits": 11,
+  "referenceThresholdTau": 500,
+  "chain": "Arbitrum Sepolia",
+  "chainId": 421614,
+  "localScaleBallotCounts": [8, 64, 1024],
+  "localScaleTauRule": "floor(255*n/4)"
+}

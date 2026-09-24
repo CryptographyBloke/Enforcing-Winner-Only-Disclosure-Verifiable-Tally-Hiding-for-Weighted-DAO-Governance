@@ -1,0 +1,20 @@
+{
+  "name": "winner-only-disclosure-arbitrum",
+  "version": "1.0.0",
+  "description": "Arbitrum contracts and ballot admission for weighted winner-only tally hiding",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:board-binding": "node --test ../../backend/js_protocol/test/accepted_board.test.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "circomlibjs": "^0.1.7",
+    "ethers": "^6.13.0",
+    "snarkjs": "^0.7.6"
+  }
+}

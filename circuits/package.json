@@ -1,0 +1,9 @@
+{
+  "name": "winner-only-disclosure-circuits",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned Circom circuit dependency for the ballot relation",
+  "dependencies": {
+    "circomlib": "2.0.5"
+  }
+}
