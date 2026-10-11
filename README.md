@@ -2,6 +2,8 @@
 
 Research artifact for [Enforcing Winner-Only Disclosure: Verifiable Tally Hiding for Weighted DAO Governance](https://eprint.iacr.org/2026/1773).
 
+**Language:** English | [简体中文](README.zh-CN.md)
+
 This repository contains the source, tests, and scripts needed to build the reference implementation and run fresh local experiments. It is a research prototype, not production governance software. Tests and successful runs do not by themselves prove the paper's theorem or its assumptions.
 
 ## Choose what you want to reproduce
