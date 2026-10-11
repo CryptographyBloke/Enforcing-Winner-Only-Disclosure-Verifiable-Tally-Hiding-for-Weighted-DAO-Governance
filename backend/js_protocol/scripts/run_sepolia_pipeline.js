@@ -143,6 +143,9 @@ async function main() {
   const ballotContext = JSON.parse(fs.readFileSync(path.join(runDirectory, "ballot_public_context.json"), "utf8"));
   const publicProofs = JSON.parse(fs.readFileSync(path.join(runDirectory, "ballot_public_proofs.json"), "utf8"));
   requireCondition(publicProofs.length === 8, "E_BALLOT_COUNT", "fresh proof child did not produce eight ballots");
+  const verificationKeyBytes = fs.readFileSync(artifacts.vkeyPath);
+  requireCondition(sha256Bytes(verificationKeyBytes) === ballotContext.artifactHashes.vkeySha256, "E_VKEY_HASH", "verification key changed after ballot proof generation");
+  writeNew(path.join(runDirectory, "verification_key.json"), verificationKeyBytes);
   const ballotProofGenerationMs = elapsedMs(ballotProofWallStarted);
   const ballotProofProverSumMs = publicProofs.reduce((sum, record) => sum + record.provingMs, 0);
   sampleRss();
@@ -400,3 +403,4 @@ main().catch((error) => {
   process.stderr.write(`${error.code || "E_CGY_N8"}: ${error.stack || error.message}\n`);
   process.exitCode = 1;
 });
+
