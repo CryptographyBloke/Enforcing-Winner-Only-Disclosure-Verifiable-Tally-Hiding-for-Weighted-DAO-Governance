@@ -1,0 +1,8 @@
+{
+  "schema": "FC2027-CGY-TOOLBOX-FULL-V1-Q5/ISOLATED-ORACLE-COMPARISON/V1",
+  "resultBit": 1,
+  "oracleResult": 1,
+  "match": true,
+  "oracleArtifactSha256": "9af97febe856b4bc6a4417f131c3ba9d4c924b79e830a45d2043dba0bbd64e3e",
+  "oracleComputationIncludedInProtocol": false
+}
