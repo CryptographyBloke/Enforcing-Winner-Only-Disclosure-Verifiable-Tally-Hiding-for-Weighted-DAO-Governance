@@ -1,0 +1,755 @@
+{
+  "schema": "FC2027-CGY-TOOLBOX-FULL-V1-Q5/READY-FRONTIER-MICROBENCH/V1",
+  "profile": "FC2027-CGY-TOOLBOX-FULL-V1-Q5",
+  "trustees": 5,
+  "polynomialDegree": 4,
+  "decryptionThreshold": 5,
+  "setupHash": "1ec839c5f6b8d70e4947b7d1070c6b29bf26d7fae3641ba94c97f1d575c4831f",
+  "frontierSizes": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "repetitionsBySize": {
+    "1": 5,
+    "2": 5,
+    "4": 5,
+    "8": 5,
+    "16": 5,
+    "32": 10
+  },
+  "timingScope": "native run_gate_request loop only; stdin JSON parsing, process startup, transcript adaptation, and public verification excluded identically from both modes",
+  "taskB_32GateSummary": {
+    "medianSerialSeconds": 1.4344652500000001,
+    "medianParallelSeconds": 0.21160400000000001,
+    "serialGatesPerSecond": 22.307964588197585,
+    "parallelGatesPerSecond": 151.22587474716923,
+    "medianSpeedup": 6.779008194552088,
+    "meanSerialSeconds": 1.43582138,
+    "meanParallelSeconds": 0.20944985999999996,
+    "populationStddevSerialSeconds": 0.009455472734749996,
+    "populationStddevParallelSeconds": 0.008843866701302095
+  },
+  "taskB_32GateVerifier": {
+    "serialVerified": 32,
+    "parallelVerified": 32,
+    "sameFrozenPublicVerifier": true
+  },
+  "sweeps": [
+    {
+      "gateCount": 1,
+      "repetitions": 5,
+      "summary": {
+        "medianSerialSeconds": 0.0463374,
+        "medianParallelSeconds": 0.0469769,
+        "serialGatesPerSecond": 21.580839667309775,
+        "parallelGatesPerSecond": 21.287058107282515,
+        "medianSpeedup": 0.9863869263403928,
+        "meanSerialSeconds": 0.04571194,
+        "meanParallelSeconds": 0.04623320000000001,
+        "populationStddevSerialSeconds": 0.0012139324982881066,
+        "populationStddevParallelSeconds": 0.0011614577202808554
+      },
+      "verifier": {
+        "serialVerified": 1,
+        "parallelVerified": 1,
+        "sameFrozenPublicVerifier": true
+      },
+      "transcriptFiles": {
+        "serial": {
+          "path": "serial_n1_last_repetition.jsonl",
+          "bytes": 203455,
+          "sha256": "de55b09421d001392b714961af7658246c87e9e8b94ce29d75e1c03c86c83b13"
+        },
+        "parallel": {
+          "path": "parallel_n1_last_repetition.jsonl",
+          "bytes": 203455,
+          "sha256": "de55b09421d001392b714961af7658246c87e9e8b94ce29d75e1c03c86c83b13"
+        },
+        "byteIdentical": true,
+        "canonicalGateIdOrder": true,
+        "broadcastTranscriptsVerified": true
+      },
+      "observations": [
+        {
+          "repetition": 1,
+          "firstMode": "serial",
+          "executionId": "8dd86a578603c1204d5dfb11ca7d9e4eb79cfe0a2df36a908321f71352bdedc9",
+          "gateCount": 1,
+          "serialSeconds": 0.0469628,
+          "parallelSeconds": 0.0474011,
+          "speedup": 0.9907533791409904,
+          "serialTranscriptSha256": "401cb3d1901c69aea25be0e3cf57278c8cf9d1564397062c219ef8a7a87b3b0f",
+          "parallelTranscriptSha256": "401cb3d1901c69aea25be0e3cf57278c8cf9d1564397062c219ef8a7a87b3b0f",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 2,
+          "firstMode": "parallel",
+          "executionId": "3ad2dcfd427e790eb31633943ba3a7216c30637cc665b783a3a141bad172aafa",
+          "gateCount": 1,
+          "serialSeconds": 0.0463374,
+          "parallelSeconds": 0.0470234,
+          "speedup": 0.9854115185205664,
+          "serialTranscriptSha256": "3afeaf4d033afc44ff4f295c1424f06967a31381c6295aa25441e9a318045e7b",
+          "parallelTranscriptSha256": "3afeaf4d033afc44ff4f295c1424f06967a31381c6295aa25441e9a318045e7b",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 3,
+          "firstMode": "serial",
+          "executionId": "b7aa9348ddb20326193e9090742f076a4b8b970814e486d4ca602b38fd8fb862",
+          "gateCount": 1,
+          "serialSeconds": 0.0467156,
+          "parallelSeconds": 0.0469769,
+          "speedup": 0.9944376917165672,
+          "serialTranscriptSha256": "127e311ec5c1d2be92f9bb26208f1ca11318ae987d657ae165bd07f4ea25da62",
+          "parallelTranscriptSha256": "127e311ec5c1d2be92f9bb26208f1ca11318ae987d657ae165bd07f4ea25da62",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 4,
+          "firstMode": "parallel",
+          "executionId": "5c62506cd0d247e7ed8c5aebd650651faa5887bb355359acd5f5e11a32300cf5",
+          "gateCount": 1,
+          "serialSeconds": 0.0439129,
+          "parallelSeconds": 0.0443562,
+          "speedup": 0.9900059067278081,
+          "serialTranscriptSha256": "947c25cf5a65dda608f4f0fdf81457bd7f12cf1ed200d52915d49133b69e4161",
+          "parallelTranscriptSha256": "947c25cf5a65dda608f4f0fdf81457bd7f12cf1ed200d52915d49133b69e4161",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 5,
+          "firstMode": "serial",
+          "executionId": "f51f28daf5ad2c24d46aa39068a9f246f9ea8549da4f46c4b2146c90a6c3b32a",
+          "gateCount": 1,
+          "serialSeconds": 0.044631,
+          "parallelSeconds": 0.0454084,
+          "speedup": 0.9828798195928505,
+          "serialTranscriptSha256": "5fa2ff8c8dbc8fe084b6e73b1ab69b42f02997d8aca21893d042ebf4f309858e",
+          "parallelTranscriptSha256": "5fa2ff8c8dbc8fe084b6e73b1ab69b42f02997d8aca21893d042ebf4f309858e",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        }
+      ]
+    },
+    {
+      "gateCount": 2,
+      "repetitions": 5,
+      "summary": {
+        "medianSerialSeconds": 0.0908411,
+        "medianParallelSeconds": 0.0471959,
+        "serialGatesPerSecond": 22.016466115007415,
+        "parallelGatesPerSecond": 42.37656237088391,
+        "medianSpeedup": 1.9247667699948512,
+        "meanSerialSeconds": 0.09073396,
+        "meanParallelSeconds": 0.05032752,
+        "populationStddevSerialSeconds": 0.0007818304511849093,
+        "populationStddevParallelSeconds": 0.0047628000350214165
+      },
+      "verifier": {
+        "serialVerified": 2,
+        "parallelVerified": 2,
+        "sameFrozenPublicVerifier": true
+      },
+      "transcriptFiles": {
+        "serial": {
+          "path": "serial_n2_last_repetition.jsonl",
+          "bytes": 406839,
+          "sha256": "4866a1e9f068befb6cc98c2a23fad1d81c0672ae2dd526d3baa70d6f88040a7c"
+        },
+        "parallel": {
+          "path": "parallel_n2_last_repetition.jsonl",
+          "bytes": 406839,
+          "sha256": "4866a1e9f068befb6cc98c2a23fad1d81c0672ae2dd526d3baa70d6f88040a7c"
+        },
+        "byteIdentical": true,
+        "canonicalGateIdOrder": true,
+        "broadcastTranscriptsVerified": true
+      },
+      "observations": [
+        {
+          "repetition": 1,
+          "firstMode": "serial",
+          "executionId": "0eb4c3d519072cbd86e9a62492bb1b11803cb49d4aabae34b039fdfec4a6813f",
+          "gateCount": 2,
+          "serialSeconds": 0.0893071,
+          "parallelSeconds": 0.0459569,
+          "speedup": 1.9432794640195488,
+          "serialTranscriptSha256": "347a3b17e98041f7d8139672532b6e491398e204b04ffe7715ef470c299db09d",
+          "parallelTranscriptSha256": "347a3b17e98041f7d8139672532b6e491398e204b04ffe7715ef470c299db09d",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 2,
+          "firstMode": "parallel",
+          "executionId": "19dd8f7fba54c1a5f7fee51436ef136ce7ab3f95e69a9eb58bbe820db2eb8133",
+          "gateCount": 2,
+          "serialSeconds": 0.0906828,
+          "parallelSeconds": 0.0470556,
+          "speedup": 1.9271415091933795,
+          "serialTranscriptSha256": "11324101258d007332e625fec755bff924006cfa2f60cb1adcb8fa72cda633a0",
+          "parallelTranscriptSha256": "11324101258d007332e625fec755bff924006cfa2f60cb1adcb8fa72cda633a0",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 3,
+          "firstMode": "serial",
+          "executionId": "87afe1391916e514a3b49cf526810eca5ce0557d2c9ad5547a1deffb2f32b527",
+          "gateCount": 2,
+          "serialSeconds": 0.0916019,
+          "parallelSeconds": 0.052907,
+          "speedup": 1.7313758103842591,
+          "serialTranscriptSha256": "6c0054a766482a3381c8fad044e6c28a90d93478657b1cbe2ef69bef4274af4c",
+          "parallelTranscriptSha256": "6c0054a766482a3381c8fad044e6c28a90d93478657b1cbe2ef69bef4274af4c",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 4,
+          "firstMode": "parallel",
+          "executionId": "355593a11deaf9219c755ecff318747277556404b23413ac09fd9edfde799b5e",
+          "gateCount": 2,
+          "serialSeconds": 0.0908411,
+          "parallelSeconds": 0.0471959,
+          "speedup": 1.9247667699948512,
+          "serialTranscriptSha256": "f5805c95bb8d32924b548088e5fd7bd4a83ca151a6224ad0e8d9aaaab5b0a27a",
+          "parallelTranscriptSha256": "f5805c95bb8d32924b548088e5fd7bd4a83ca151a6224ad0e8d9aaaab5b0a27a",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 5,
+          "firstMode": "serial",
+          "executionId": "ff94829f1b62bd35eb3010137dd2ef73cf1f1f87cf51a38ceab1a1d71b9e9c81",
+          "gateCount": 2,
+          "serialSeconds": 0.0912369,
+          "parallelSeconds": 0.0585222,
+          "speedup": 1.5590135025682559,
+          "serialTranscriptSha256": "4de0309bf7d036cadf729e6d53d8956f3803fb52a18ce5ce734990af908f595d",
+          "parallelTranscriptSha256": "4de0309bf7d036cadf729e6d53d8956f3803fb52a18ce5ce734990af908f595d",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        }
+      ]
+    },
+    {
+      "gateCount": 4,
+      "repetitions": 5,
+      "summary": {
+        "medianSerialSeconds": 0.1821892,
+        "medianParallelSeconds": 0.0501907,
+        "serialGatesPerSecond": 21.955198222507153,
+        "parallelGatesPerSecond": 79.69603930608659,
+        "medianSpeedup": 3.629939411086118,
+        "meanSerialSeconds": 0.18541382,
+        "meanParallelSeconds": 0.06104909999999999,
+        "populationStddevSerialSeconds": 0.007996561137238933,
+        "populationStddevParallelSeconds": 0.014360482041352231
+      },
+      "verifier": {
+        "serialVerified": 4,
+        "parallelVerified": 4,
+        "sameFrozenPublicVerifier": true
+      },
+      "transcriptFiles": {
+        "serial": {
+          "path": "serial_n4_last_repetition.jsonl",
+          "bytes": 813602,
+          "sha256": "c5753389e301ac99782a390a497c17577fbfa2c8c971446acc3e1ce8d48ecc62"
+        },
+        "parallel": {
+          "path": "parallel_n4_last_repetition.jsonl",
+          "bytes": 813602,
+          "sha256": "c5753389e301ac99782a390a497c17577fbfa2c8c971446acc3e1ce8d48ecc62"
+        },
+        "byteIdentical": true,
+        "canonicalGateIdOrder": true,
+        "broadcastTranscriptsVerified": true
+      },
+      "observations": [
+        {
+          "repetition": 1,
+          "firstMode": "serial",
+          "executionId": "e2c005a0bbd95b03587802dd0b3e61e7774dcb944332b95cc90c5794e0308990",
+          "gateCount": 4,
+          "serialSeconds": 0.2012041,
+          "parallelSeconds": 0.0501907,
+          "speedup": 4.008792465536444,
+          "serialTranscriptSha256": "0e4bd6e14cc21be7a1ed6324cd9883b408b5091d059e292d8764efab520376a3",
+          "parallelTranscriptSha256": "0e4bd6e14cc21be7a1ed6324cd9883b408b5091d059e292d8764efab520376a3",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 2,
+          "firstMode": "parallel",
+          "executionId": "6f0d2c1fb6af7afd5ac8f8ff460950961650587cca84c300b85708be71356e48",
+          "gateCount": 4,
+          "serialSeconds": 0.1821892,
+          "parallelSeconds": 0.0488786,
+          "speedup": 3.7273817171522916,
+          "serialTranscriptSha256": "ef6bbc265bcb325783c91558394494fe871c550b60586eea7392ac2664baa723",
+          "parallelTranscriptSha256": "ef6bbc265bcb325783c91558394494fe871c550b60586eea7392ac2664baa723",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 3,
+          "firstMode": "serial",
+          "executionId": "d6e40dc608d92a407fb68341931308b3bc9c8d6364e784483fdf9eff2ea1b27b",
+          "gateCount": 4,
+          "serialSeconds": 0.1833165,
+          "parallelSeconds": 0.0797455,
+          "speedup": 2.2987692095478742,
+          "serialTranscriptSha256": "fddefb5fca71921a32067b50e517166dfc073bc32c59166e152c2c1e95d60c2e",
+          "parallelTranscriptSha256": "fddefb5fca71921a32067b50e517166dfc073bc32c59166e152c2c1e95d60c2e",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 4,
+          "firstMode": "parallel",
+          "executionId": "7768e9222abe9b62c0a6ed4e2be73a0ffb98490e83f48cc0f9b604b6ae9a0ca0",
+          "gateCount": 4,
+          "serialSeconds": 0.1808129,
+          "parallelSeconds": 0.0774658,
+          "speedup": 2.3340996930258253,
+          "serialTranscriptSha256": "7e16c0349eeb1f4b257542951e22cf7c231222ef039588b53dc58ae7d5ba59fb",
+          "parallelTranscriptSha256": "7e16c0349eeb1f4b257542951e22cf7c231222ef039588b53dc58ae7d5ba59fb",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 5,
+          "firstMode": "serial",
+          "executionId": "ff776da48ce0768f6c8852fdc2a160561d5737aeaec6e763fa15e2bf123199c3",
+          "gateCount": 4,
+          "serialSeconds": 0.1795464,
+          "parallelSeconds": 0.0489649,
+          "speedup": 3.6668388988847114,
+          "serialTranscriptSha256": "ceec6d7a5b78fba4ccfe5c64bd83f6e6b94a89bb539bdcd3139551f5ba9a33a2",
+          "parallelTranscriptSha256": "ceec6d7a5b78fba4ccfe5c64bd83f6e6b94a89bb539bdcd3139551f5ba9a33a2",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        }
+      ]
+    },
+    {
+      "gateCount": 8,
+      "repetitions": 5,
+      "summary": {
+        "medianSerialSeconds": 0.3667411,
+        "medianParallelSeconds": 0.082459,
+        "serialGatesPerSecond": 21.8137536261957,
+        "parallelGatesPerSecond": 97.01791193199044,
+        "medianSpeedup": 4.447556967705162,
+        "meanSerialSeconds": 0.36545706000000006,
+        "meanParallelSeconds": 0.0796334,
+        "populationStddevSerialSeconds": 0.00541397005702839,
+        "populationStddevParallelSeconds": 0.0062227493415692075
+      },
+      "verifier": {
+        "serialVerified": 8,
+        "parallelVerified": 8,
+        "sameFrozenPublicVerifier": true
+      },
+      "transcriptFiles": {
+        "serial": {
+          "path": "serial_n8_last_repetition.jsonl",
+          "bytes": 1627316,
+          "sha256": "2cb51a3c35e4c3a3ccc7a9827fc95927e3bcc7f256c9a73bc81f17c472c59f81"
+        },
+        "parallel": {
+          "path": "parallel_n8_last_repetition.jsonl",
+          "bytes": 1627316,
+          "sha256": "2cb51a3c35e4c3a3ccc7a9827fc95927e3bcc7f256c9a73bc81f17c472c59f81"
+        },
+        "byteIdentical": true,
+        "canonicalGateIdOrder": true,
+        "broadcastTranscriptsVerified": true
+      },
+      "observations": [
+        {
+          "repetition": 1,
+          "firstMode": "serial",
+          "executionId": "63b91ac05b45c27e94948db75254cb7de4f9c603d743cb1c98d246f8ec43764f",
+          "gateCount": 8,
+          "serialSeconds": 0.3616473,
+          "parallelSeconds": 0.0826607,
+          "speedup": 4.375081507899159,
+          "serialTranscriptSha256": "b5a0d053d35e27b497bcb42e238e92eafabf6219df78c4dcf53c8e05b503ec22",
+          "parallelTranscriptSha256": "b5a0d053d35e27b497bcb42e238e92eafabf6219df78c4dcf53c8e05b503ec22",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 2,
+          "firstMode": "parallel",
+          "executionId": "16d0dc729ca5980a03b8237ce0b381a778af74deacecb2f1b1289f03f2372d24",
+          "gateCount": 8,
+          "serialSeconds": 0.3667411,
+          "parallelSeconds": 0.0685211,
+          "speedup": 5.352236026566999,
+          "serialTranscriptSha256": "834f1e0aa8912f8ee75a94564c0bbfe2e7a30dbea61c2c2ab32041a92d0e1e84",
+          "parallelTranscriptSha256": "834f1e0aa8912f8ee75a94564c0bbfe2e7a30dbea61c2c2ab32041a92d0e1e84",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 3,
+          "firstMode": "serial",
+          "executionId": "b0c4a6493fd7f4ccf17961f0ceaed995fa0844f99b8a688209b7d2559744cf0c",
+          "gateCount": 8,
+          "serialSeconds": 0.3726494,
+          "parallelSeconds": 0.082459,
+          "speedup": 4.519208333838635,
+          "serialTranscriptSha256": "75eafdee58acf1e273e2e235eed305d35950bca3272ddaad1c86bb7c77bc7c44",
+          "parallelTranscriptSha256": "75eafdee58acf1e273e2e235eed305d35950bca3272ddaad1c86bb7c77bc7c44",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 4,
+          "firstMode": "parallel",
+          "executionId": "335f6ab4d456b74118952838c3c44c0392413c7f767380e2dda3cc37be6cb713",
+          "gateCount": 8,
+          "serialSeconds": 0.368945,
+          "parallelSeconds": 0.0866875,
+          "speedup": 4.25603460706561,
+          "serialTranscriptSha256": "b0ca4c35c93590ce7daf621eb33afdbea486992851ef9ce8837d40509dba1fc5",
+          "parallelTranscriptSha256": "b0ca4c35c93590ce7daf621eb33afdbea486992851ef9ce8837d40509dba1fc5",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 5,
+          "firstMode": "serial",
+          "executionId": "b6a786603800cf51e08c30e1afdeb80464f94d1f800815e9bc0b071a8bf92e0e",
+          "gateCount": 8,
+          "serialSeconds": 0.3573025,
+          "parallelSeconds": 0.0778387,
+          "speedup": 4.590293774176599,
+          "serialTranscriptSha256": "2219a852d2341f26f378b29df49cd2a3cb037fa749c64b861c1b165131366438",
+          "parallelTranscriptSha256": "2219a852d2341f26f378b29df49cd2a3cb037fa749c64b861c1b165131366438",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        }
+      ]
+    },
+    {
+      "gateCount": 16,
+      "repetitions": 5,
+      "summary": {
+        "medianSerialSeconds": 0.7292284,
+        "medianParallelSeconds": 0.1055024,
+        "serialGatesPerSecond": 21.940999555146234,
+        "parallelGatesPerSecond": 151.65531779371844,
+        "medianSpeedup": 6.911960296637802,
+        "meanSerialSeconds": 0.72782324,
+        "meanParallelSeconds": 0.10534618,
+        "populationStddevSerialSeconds": 0.003609119297335554,
+        "populationStddevParallelSeconds": 0.0009719768133036931
+      },
+      "verifier": {
+        "serialVerified": 16,
+        "parallelVerified": 16,
+        "sameFrozenPublicVerifier": true
+      },
+      "transcriptFiles": {
+        "serial": {
+          "path": "serial_n16_last_repetition.jsonl",
+          "bytes": 3255420,
+          "sha256": "d1d850841b26e873f4df33681df9e812ad094eaebe5df2a1ffcbde8d772829e4"
+        },
+        "parallel": {
+          "path": "parallel_n16_last_repetition.jsonl",
+          "bytes": 3255420,
+          "sha256": "d1d850841b26e873f4df33681df9e812ad094eaebe5df2a1ffcbde8d772829e4"
+        },
+        "byteIdentical": true,
+        "canonicalGateIdOrder": true,
+        "broadcastTranscriptsVerified": true
+      },
+      "observations": [
+        {
+          "repetition": 1,
+          "firstMode": "serial",
+          "executionId": "402bd5d6267e9ae6452cd9dc5b43a3653894df8a2cf6951f5d64fd7d8c490ec9",
+          "gateCount": 16,
+          "serialSeconds": 0.7312044,
+          "parallelSeconds": 0.1038707,
+          "speedup": 7.039563611297507,
+          "serialTranscriptSha256": "2bd2aa59a46618cff02d837397321473f63d19739ed7a3eaeff16c7860ea449e",
+          "parallelTranscriptSha256": "2bd2aa59a46618cff02d837397321473f63d19739ed7a3eaeff16c7860ea449e",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 2,
+          "firstMode": "parallel",
+          "executionId": "a47b5828083dd9634296b8c482003d20cd0889a8aad734d5f8729e198d5e059c",
+          "gateCount": 16,
+          "serialSeconds": 0.730213,
+          "parallelSeconds": 0.1046482,
+          "speedup": 6.977788437832662,
+          "serialTranscriptSha256": "b23fb7b6d5fee0bb71d12fe65398e439fd8b1a8340e817548321249c9b3cf137",
+          "parallelTranscriptSha256": "b23fb7b6d5fee0bb71d12fe65398e439fd8b1a8340e817548321249c9b3cf137",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 3,
+          "firstMode": "serial",
+          "executionId": "b506a6f1eaa45f6bf03899edf94dbf0e35144f8ca57b9a09a00449cd35dd7bd7",
+          "gateCount": 16,
+          "serialSeconds": 0.7292284,
+          "parallelSeconds": 0.1063697,
+          "speedup": 6.855602676326059,
+          "serialTranscriptSha256": "57d1b2728f5a0a0b5f6ecb3c76e2e47d80dfa6fd2e5e0791780c6093ebf602e4",
+          "parallelTranscriptSha256": "57d1b2728f5a0a0b5f6ecb3c76e2e47d80dfa6fd2e5e0791780c6093ebf602e4",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 4,
+          "firstMode": "parallel",
+          "executionId": "9549864b6467af532c6d6417f72b4c25b3b6f2da5aa0b08d38f0c721b5f70674",
+          "gateCount": 16,
+          "serialSeconds": 0.7274182,
+          "parallelSeconds": 0.1055024,
+          "speedup": 6.894802393120915,
+          "serialTranscriptSha256": "a7e420ee7dd09e33a31eb6577835dd4a4d5492076dd4b2b2270b66db684775a9",
+          "parallelTranscriptSha256": "a7e420ee7dd09e33a31eb6577835dd4a4d5492076dd4b2b2270b66db684775a9",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 5,
+          "firstMode": "serial",
+          "executionId": "88403b7eedb2e48a40854ef361472129f99429a3df42ba4d2fb2a5a27ab8b200",
+          "gateCount": 16,
+          "serialSeconds": 0.7210522,
+          "parallelSeconds": 0.1063399,
+          "speedup": 6.780636430916336,
+          "serialTranscriptSha256": "228a05c3d076a1a6ac842979dc1161d23fe48aab6c1bf28deb82fbeee8c50374",
+          "parallelTranscriptSha256": "228a05c3d076a1a6ac842979dc1161d23fe48aab6c1bf28deb82fbeee8c50374",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        }
+      ]
+    },
+    {
+      "gateCount": 32,
+      "repetitions": 10,
+      "summary": {
+        "medianSerialSeconds": 1.4344652500000001,
+        "medianParallelSeconds": 0.21160400000000001,
+        "serialGatesPerSecond": 22.307964588197585,
+        "parallelGatesPerSecond": 151.22587474716923,
+        "medianSpeedup": 6.779008194552088,
+        "meanSerialSeconds": 1.43582138,
+        "meanParallelSeconds": 0.20944985999999996,
+        "populationStddevSerialSeconds": 0.009455472734749996,
+        "populationStddevParallelSeconds": 0.008843866701302095
+      },
+      "verifier": {
+        "serialVerified": 32,
+        "parallelVerified": 32,
+        "sameFrozenPublicVerifier": true
+      },
+      "transcriptFiles": {
+        "serial": {
+          "path": "serial_n32_last_repetition.jsonl",
+          "bytes": 6511383,
+          "sha256": "135a7c5f585f31feafa5ffe88e78ea992b17b1262b596195993c16befcc5e4e4"
+        },
+        "parallel": {
+          "path": "parallel_n32_last_repetition.jsonl",
+          "bytes": 6511383,
+          "sha256": "135a7c5f585f31feafa5ffe88e78ea992b17b1262b596195993c16befcc5e4e4"
+        },
+        "byteIdentical": true,
+        "canonicalGateIdOrder": true,
+        "broadcastTranscriptsVerified": true
+      },
+      "observations": [
+        {
+          "repetition": 1,
+          "firstMode": "serial",
+          "executionId": "1e775fcddcaf7c1c8ef003117675d84dcd658d44ab386a11c30f9c1c419d7caa",
+          "gateCount": 32,
+          "serialSeconds": 1.4611727,
+          "parallelSeconds": 0.2170761,
+          "speedup": 6.731154189705823,
+          "serialTranscriptSha256": "a542666eddc0e0c334c9ba92e5bdaf5da4aaf10cdbe82256e755b4e9e7fc070a",
+          "parallelTranscriptSha256": "a542666eddc0e0c334c9ba92e5bdaf5da4aaf10cdbe82256e755b4e9e7fc070a",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 2,
+          "firstMode": "parallel",
+          "executionId": "5fc2fb26f30f481512eae8de8d9cbaed02bbfe3a8844e4fea7dee0d586b81edc",
+          "gateCount": 32,
+          "serialSeconds": 1.4306931,
+          "parallelSeconds": 0.1937614,
+          "speedup": 7.3837879990545074,
+          "serialTranscriptSha256": "916e8173a87091cfe7417a5e21a292135cc6861338a1175f2d976f70ff6bfb0d",
+          "parallelTranscriptSha256": "916e8173a87091cfe7417a5e21a292135cc6861338a1175f2d976f70ff6bfb0d",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 3,
+          "firstMode": "serial",
+          "executionId": "4792cadd7960f87ac759d4b1eaa3b4d62461a00fcb634468c84ec6a0fcb3b2f8",
+          "gateCount": 32,
+          "serialSeconds": 1.4343142,
+          "parallelSeconds": 0.2041372,
+          "speedup": 7.026226479054284,
+          "serialTranscriptSha256": "5aba77103f626c7c0b1d4d3723a526700de360d6ab85b6091b2d08d09295374e",
+          "parallelTranscriptSha256": "5aba77103f626c7c0b1d4d3723a526700de360d6ab85b6091b2d08d09295374e",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 4,
+          "firstMode": "parallel",
+          "executionId": "b03618082479c09979f7624f16623d1e0f8b720b2c44824fdf832cc35360188a",
+          "gateCount": 32,
+          "serialSeconds": 1.4400759,
+          "parallelSeconds": 0.210564,
+          "speedup": 6.839136319598792,
+          "serialTranscriptSha256": "96e6483a866d47d5f8696c5920e72c9b177fcc71c628e174853a3c92fc6a1c8f",
+          "parallelTranscriptSha256": "96e6483a866d47d5f8696c5920e72c9b177fcc71c628e174853a3c92fc6a1c8f",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 5,
+          "firstMode": "serial",
+          "executionId": "b83c027a4480cbfc2be4eec533e267e87a7c595bdf8904abaee06b7b8307f59e",
+          "gateCount": 32,
+          "serialSeconds": 1.428458,
+          "parallelSeconds": 0.1952745,
+          "speedup": 7.315128191340908,
+          "serialTranscriptSha256": "907868aed116faac6016c241992ed114d8200aa2b42b7727290a990ea82a9b07",
+          "parallelTranscriptSha256": "907868aed116faac6016c241992ed114d8200aa2b42b7727290a990ea82a9b07",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 6,
+          "firstMode": "parallel",
+          "executionId": "1b1d8d85f02c3dd528fb67704610e8fff9140c08ac6c485a11747a82c28f8084",
+          "gateCount": 32,
+          "serialSeconds": 1.4365648,
+          "parallelSeconds": 0.212644,
+          "speedup": 6.7557269426835465,
+          "serialTranscriptSha256": "34aa26cda6983a5674786798992decc04040d4055c4d5fa6988baaa1de60bf36",
+          "parallelTranscriptSha256": "34aa26cda6983a5674786798992decc04040d4055c4d5fa6988baaa1de60bf36",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 7,
+          "firstMode": "serial",
+          "executionId": "4ce00203181f733c90c3fd97a5517c931c51686f4cd7c2075c3d593f50054c79",
+          "gateCount": 32,
+          "serialSeconds": 1.4376037,
+          "parallelSeconds": 0.2137734,
+          "speedup": 6.724895145981679,
+          "serialTranscriptSha256": "5fe3576be7a195ce0993425a839bcc8e963fc4c5c8846b131319516e87bf4e78",
+          "parallelTranscriptSha256": "5fe3576be7a195ce0993425a839bcc8e963fc4c5c8846b131319516e87bf4e78",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 8,
+          "firstMode": "parallel",
+          "executionId": "083c3b4aa339dbc7f2df17d65eafc0dfab6053b5007f2852720ff2c62617ad60",
+          "gateCount": 32,
+          "serialSeconds": 1.4346163,
+          "parallelSeconds": 0.2233732,
+          "speedup": 6.422508608911007,
+          "serialTranscriptSha256": "6232ccd747a61cccdec4049e5a1a6269877f97b8c9e8ffc04799eae5e264d54c",
+          "parallelTranscriptSha256": "6232ccd747a61cccdec4049e5a1a6269877f97b8c9e8ffc04799eae5e264d54c",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 9,
+          "firstMode": "serial",
+          "executionId": "b4675bf6919ab2613f842980299ddbfb0741240448a6d054e79e04a22e44cc3b",
+          "gateCount": 32,
+          "serialSeconds": 1.4263514,
+          "parallelSeconds": 0.209476,
+          "speedup": 6.809139949206592,
+          "serialTranscriptSha256": "61c8e7cde83a4b11b1e7ee8b30ba97b2318a0753f2e654583ba94cdf8de4042f",
+          "parallelTranscriptSha256": "61c8e7cde83a4b11b1e7ee8b30ba97b2318a0753f2e654583ba94cdf8de4042f",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        },
+        {
+          "repetition": 10,
+          "firstMode": "parallel",
+          "executionId": "d073f00d0a68394872edfa70d9e14bf00624513d12e53d10a6b66c745d91f9fa",
+          "gateCount": 32,
+          "serialSeconds": 1.4283637,
+          "parallelSeconds": 0.2144188,
+          "speedup": 6.661559993806513,
+          "serialTranscriptSha256": "2b4a3ff7613800ca883938cf3d040ab164c7a9e2bd4054bd880ac1c03af79b40",
+          "parallelTranscriptSha256": "2b4a3ff7613800ca883938cf3d040ab164c7a9e2bd4054bd880ac1c03af79b40",
+          "transcriptsIdentical": true,
+          "serialPublicVerified": true,
+          "parallelPublicVerified": true
+        }
+      ]
+    }
+  ]
+}

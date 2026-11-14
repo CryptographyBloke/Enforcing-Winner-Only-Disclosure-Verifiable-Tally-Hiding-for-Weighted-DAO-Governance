@@ -4,19 +4,20 @@
 
 **语言：** [English](README.md) | 简体中文
 
-本仓库包含构建参考实现、运行测试以及开展全新本地实验所需的源代码和脚本。这是研究原型，不是可直接用于生产环境的治理投票软件。测试通过或实验成功本身并不能证明论文中的定理及其假设成立。
+本仓库包含构建参考实现、运行测试以及开展全新本地实验所需的源代码和脚本，也包含论文两张结果表背后的原始运行记录（目录 [`evidence/`](evidence/README.md)，说明为英文）。这是研究原型，不是可直接用于生产环境的治理投票软件。测试通过或实验成功本身并不能证明论文中的定理及其假设成立。
 
 ## 选择要复现的内容
 
 | 目标 | 从这里开始 | 是否需要钱包或公共 RPC？ |
 |---|---|---:|
-| 检查协议、原生后端和合约测试 | [验证](#validation) | 否 |
-| 运行完整的本地 n=8 流程 | [完整本地 n=8 实验](#complete-local-n8-run) | 否 |
-| 运行更大规模的本地实验 | [本地规模实验](#local-scale-runs) | 否 |
-| 在 Arbitrum Sepolia 上运行全新 n=8 实验 | [公共测试网实验](#fresh-arbitrum-sepolia-n8-run) | 是 |
-| 重放已有的公共实验 | [公共重放](#replay-a-public-run) | 只需要只读 RPC |
+| **一步一步复现 n=8 结果（Rust 后端）** | [分步指南](#分步指南用-rust-后端复现-n8-结果) | 否 |
+| 核对论文记录的 Sepolia 运行与表格数据 | [`evidence/README.md`](evidence/README.md)（英文） | 只需要只读 RPC |
+| 检查协议、原生后端和合约测试 | [验证](#验证) | 否 |
+| 运行更大规模的本地实验 | [本地规模实验](#本地规模实验) | 否 |
+| 在 Arbitrum Sepolia 上运行全新 n=8 实验 | [公共测试网实验](#在-arbitrum-sepolia-上运行全新的-n8-实验) | 是 |
+| 重放已有的公共实验 | [公共重放](#重放已有公共运行) | 只需要只读 RPC |
 
-首次复现建议从本地 n=8 开始。它会依次执行选票关系检查、全新的测试用密钥设置、精确的已接受选票板 admission、原生 CGY tally、五份 trustee share 的结果释放、独立重放和隔离的 oracle 比较，不需要消耗测试网资金。
+首次复现建议从本地 n=8 开始（见下面的分步指南）。它会依次执行选票关系检查、全新的测试用密钥设置、精确的已接受选票板 admission、原生 CGY tally、五份 trustee share 的结果释放、独立重放和隔离的 oracle 比较，不需要消耗测试网资金。
 
 ## 参考配置与范围
 
@@ -24,7 +25,7 @@
 
 - 五名 trustee；Shamir 多项式次数为 4；最终解密必须使用全部五份 share。
 - 链上合约是固定为八张选票的 `StrongN8Poll` 参考实现。
-- 当前本地规模 runner 支持 **n = 8、64 和 1024**。其他规模尚未开放。
+- 当前本地规模 runner 支持 **n = 8、64 和 1024**。其他规模尚未开放。论文中 n = 256 一行由冻结的发布前 runner 产生，它与当前 runner 只差三处已记录的比较条件（见 [`evidence/README.md`](evidence/README.md)）；当前 runner 不接受 n = 256。
 - 本地实验的阈值为 `floor(255*n/4)`；n=8 合约参考配置使用 `tau = 500`。
 - 本地 setup 由单进程的**测试专用 dealer**生成，不是生产级 DKG 或可信 setup 仪式。
 - common-view board 是本地参考服务，不是拜占庭共识协议。
@@ -122,7 +123,170 @@ npm --prefix implementation/arbitrum run test:board-binding
 GitHub Actions 会运行快速 Rust、JS、跨语言和合约检查；它**不会**生成本地 Groth16 setup，也不会运行耗时较长的端到端规模实验。后续章节介绍这些步骤。
 
 <a id="complete-local-n8-run"></a>
+## 分步指南：用 Rust 后端复现 n=8 结果
+
+这一节带你从一台空机器走到一次通过验证的本地 n=8 实验。不需要钱包，不需要测试网资金，装好依赖后也不需要联网。所有命令都在**仓库根目录**执行。下面每一条"预期输出"都是在本仓库的干净克隆上实际观察到的（Windows 11、Node.js 24.15、Rust 1.98.1、Circom 2.1.6、Intel Core i7-14650HX）。耗时只是示例，取决于你的机器。
+
+做完之后你验证了什么：选票关系的 Groth16 证明通过；加密 tally 由 Rust 后端在精确的已接受 ciphertext 上计算；五份 trustee share 只打开最终的决策比特；一个独立的重放进程在不接触秘密 share 的情况下重新验证了整个 transcript；与隔离的明文 oracle 比较，结果一致。
+
+### 第 0 步：准备环境
+
+| 工具 | 版本 | 检查命令 |
+|---|---|---|
+| Git | 较新版本即可 | `git --version` |
+| Node.js 与 npm | 20 或更高 | `node --version` |
+| Rust 与 Cargo | 1.98.1（rustup 会按 `rust-toolchain.toml` 自动安装） | `cargo --version` |
+| Circom | 必须是 2.1.6 | `circom --version` 应输出 `circom compiler 2.1.6` |
+| 磁盘 | 约 1 GB 空闲（见第 7 步的表） | |
+| 时间 | 总共约 20 分钟，其中第 3 步一次性生成密钥约 11 分钟 | |
+
+Circom 2.1.6 的可执行文件在 [release 页面](https://github.com/iden3/circom/releases/tag/v2.1.6)（`circom-linux-amd64`、`circom-macos-amd64`、`circom-windows-amd64.exe`）。下载对应系统的文件，改名为 `circom`（Windows 为 `circom.exe`），赋予可执行权限并放到 `PATH` 中；也可以放在任意位置，然后在执行第 3 步的 shell 里把 `CIRCOM_BIN` 设为它的完整路径。不要用其他版本：构建脚本会报错并停止。
+
+### 第 1 步：克隆并安装依赖
+
+```bash
+git clone https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance.git
+cd Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance
+npm ci --prefix circuits
+npm ci --prefix backend/js_protocol
+```
+
+预期：两条 `npm ci` 都以 `found 0 vulnerabilities` 结束。
+
+### 第 2 步：构建原生 Rust 后端
+
+```bash
+cargo build --release --locked --manifest-path backend/cgy_native/Cargo.toml
+```
+
+预期：命令以 `Finished` 结束，首次构建约 40 秒。它会生成 `backend/cgy_native/target/release/cgy-native`（Windows 上是 `cgy-native.exe`）。JavaScript runner 会自动找到这个文件；只有挪动过它时才需要设置 `CGY_NATIVE_BIN`。
+
+### 第 3 步：生成选票证明密钥（一次性，约 11 分钟）
+
+```bash
+npm --prefix backend/js_protocol run build:ballot
+```
+
+脚本先编译 `circuits/prototypes/strong_bit/vote_bit_full_8.circom`，再生成一把**一次性的测试专用** Groth16 密钥。这是最慢的一步。它会为每个阶段打印一行（`Compiling the ballot circuit ...`、`Creating temporary test powers-of-tau ...`、`Preparing phase two test parameters ...`），而最后两个阶段会有很长一段时间没有任何输出。请不要中断。
+
+预期最后两行：
+
+```text
+ZKEY=implementation/logs/bit_ballot/groth16/vote_bit_full_8/vote_bit_full_8_final.zkey
+VKEY=implementation/logs/bit_ballot/groth16/vote_bit_full_8/verification_key.json
+```
+
+脚本不会覆盖已有输出。要重新构建，先删除 `implementation/logs/bit_ballot/`。这把密钥只用于功能实验，不是可信 setup 仪式，绝不能用于真实投票。
+
+### 第 4 步：运行快速检查（几分钟）
+
+```bash
+cargo test --locked --manifest-path backend/cgy_native/Cargo.toml
+npm --prefix backend/js_protocol test
+npm --prefix backend/js_protocol run test:group:reference
+npm --prefix backend/js_protocol run test:cross-language
+npm --prefix backend/js_protocol run test:threshold-release
+```
+
+预期：
+
+| 命令 | 实际观察到的结果 |
+|---|---|
+| `cargo test` | `test result: ok. 2 passed`（`lib` 与 `babyjub_compat` 各一次） |
+| `test` | `ℹ tests 49`、`ℹ pass 49`、`ℹ fail 0` |
+| `test:group:reference` | `CIRCOMLIB_REFERENCE_CROSSCHECK=PASS scalars=9` |
+| `test:cross-language` | `JS_GATE_VERIFIED_BY_RUST=PASS` 和 `RUST_GATE_VERIFIED_BY_JS=PASS` |
+| `test:threshold-release` | `ℹ tests 7`、`ℹ pass 7`、`ℹ fail 0` |
+
+`test:cross-language` 检查 JavaScript 参考 gate 与 Rust gate 能否互相验证对方的 transcript。这说明快速的 Rust 后端计算的就是参考实现所计算的关系。
+
+### 第 5 步：运行 n=8 流程
+
+每次都要选择**全新的**运行目录名。runner 会拒绝覆盖已有目录。
+
+macOS 与 Linux（bash 或 zsh）：
+
+```bash
+export CGY_LOCAL_N=8
+export CGY_LOCAL_RUN_DIRECTORY=artifacts/local_five_trustee_n8_run_001
+export CGY_N8_ORACLE_DIRECTORY=artifacts/local_five_trustee_n8_run_001_oracle
+export CGY_BALLOT_ARTIFACT_ROOT="$(pwd)"
+```
+
+Windows PowerShell：
+
+```powershell
+$env:CGY_LOCAL_N = "8"
+$env:CGY_LOCAL_RUN_DIRECTORY = "artifacts/local_five_trustee_n8_run_001"
+$env:CGY_N8_ORACLE_DIRECTORY = "artifacts/local_five_trustee_n8_run_001_oracle"
+$env:CGY_BALLOT_ARTIFACT_ROOT = (Get-Location).Path
+```
+
+然后**按这个顺序**运行三个阶段：
+
+```bash
+npm --prefix backend/js_protocol run run:local-scale
+npm --prefix backend/js_protocol run replay:local
+npm --prefix backend/js_protocol run compare:oracle
+```
+
+| 阶段 | 做什么 | 预期输出（实测） | 实测耗时 |
+|---|---|---|---|
+| `run:local-scale` | 全新的测试用五 trustee setup、八张证明有效的选票、admission、sealed board、Rust 计算 134 个 gate、五份 share 释放 | `LOCAL_NATIVE_EXECUTION=PASS`、`N=8`、`GATES=134`、`FINAL_THRESHOLD=5_OF_5`、`ORACLE_INPUTS_ISOLATED=YES` | 约 30 秒 |
+| `replay:local` | 独立进程重新验证 setup、证明、board、每个 gate、release 和各哈希，**不读取** oracle | `LOCAL_PUBLIC_REPLAY=PASS`、`SOURCE_GATES_VERIFIED=134`、`ORACLE_READ=NO` | 约 6 秒 |
+| `compare:oracle` | 仅在重放通过后：把释放出的比特与明文 oracle 比较 | `ORACLE_COMPARISON=PASS`，且 `RESULT_BIT` 等于 `ORACLE_RESULT_BIT` | 不到 1 秒 |
+
+本地实验的选票权重与选择是固定的（`weights[i] = (37 i + 11) mod 256`，`votes[i] = (7 i + 1) mod 2`），密钥、随机数和证明则每次全新生成。所以**结果比特和各项计数每次都相同**（`n = 8`、`tau = 510`、134 个 gate、深度 72、结果比特 `0`），而哈希、证明和耗时每次不同。与论文本地规模表对照时，只比较结构性的列（gate 数与深度）。论文 `n = 8` 的耗时是在一台指定工作站上记录的，见 [`evidence/`](evidence/README.md)。
+
+### 第 6 步：查看产出
+
+```bash
+ls artifacts/local_five_trustee_n8_run_001
+```
+
+| 文件 | 含义 | 是否可公开 |
+|---|---|---|
+| `manifest.json` | 参数、gate 数、深度、各阶段耗时、所有哈希 | 是 |
+| `benchmark_summary.json` | 同样的耗时（扁平汇总）以及 `oracleMatchesProtocol` | 是 |
+| `public_setup.json`、`ballot_public_proofs.json`、`local_admission_board.json` | 公开输入 | 是 |
+| `gate_transcript.jsonl`（约 27 MB）与 `gate_transcript.compact.bin`（约 7 MB） | 规范 transcript 及其无损压缩形式 | 是 |
+| `final_release.json` | 五份 share 的 release 记录 | 是 |
+| `public_replay.json` | 独立重放的结果 | 是 |
+| `artifacts/..._oracle/` | 明文 oracle 输入 | **否，请保密** |
+
+读取各阶段耗时：
+
+```bash
+node -e "const t=require('./artifacts/local_five_trustee_n8_run_001/manifest.json').timing; console.log(t)"
+```
+
+论文的本地规模表报告的是同样几个阶段：证明、admission、后端、release、重放。
+
+### 第 7 步：清理（可选）
+
+| 目录 | 实测大小 | 用完可删除 |
+|---|---|---|
+| `backend/cgy_native/target/` | 534 MB | 可以，用第 2 步重建 |
+| `backend/js_protocol/node_modules/` | 118 MB | 可以，用 `npm ci` 重装 |
+| `implementation/logs/bit_ballot/` | 51 MB | 可以，但第 3 步要再花 11 分钟 |
+| `artifacts/local_five_trustee_n8_run_001/` | 34 MB | 可以 |
+
+它们都已被 git 忽略。
+
+### 本分步指南的常见问题
+
+| 现象 | 原因与处理 |
+|---|---|
+| 第 3 步报 `Circom 2.1.6 is required` | `circom --version` 输出了其他版本，或 Circom 不在 `PATH`。安装 2.1.6，或设置 `CIRCOM_BIN`（PowerShell：`$env:CIRCOM_BIN = "C:\tools\circom.exe"`）。 |
+| 第 3 步看起来卡住了 | 没有卡住。最后两个阶段（powers-of-tau 与 Groth16 密钥）约需 11 分钟且没有输出。 |
+| 第 5 步报 `E_LOCAL_RUN_EXISTS` 或 `E_LOCAL_ORACLE_EXISTS` | 该目录是上次运行留下的。两个变量都换成新的 `_002` 名字。 |
+| 第 5 步因缺少选票产物而停止 | 先完成第 3 步，并保持 `CGY_BALLOT_ARTIFACT_ROOT` 等于仓库根目录。 |
+| 找不到 `native` 二进制 | 先做第 2 步。若构建在别处，把 `CGY_NATIVE_BIN` 设为 `cgy-native` 的完整路径。 |
+| 在 Windows 上，`python` 或 `node` 不认从 Git Bash 里复制的 `/tmp/...` 路径 | 原生 Windows 程序需要 Windows 路径。在 Git Bash 里用 `cygpath -m /tmp/x` 转换；在 PowerShell 里用普通的 `C:\...` 路径。 |
+
 ## 完整本地 n=8 实验
+
+上面的分步指南是推荐路线。下面的内容用 PowerShell 语法更详细地描述同一条流水线。
 
 运行前，请先构建依赖、Rust release binary 和本地选票产物。每次实验都要选择全新的输出目录名：runner 会拒绝覆盖已有实验目录或 oracle 目录。
 
@@ -208,7 +372,7 @@ npm --prefix backend/js_protocol run compare:oracle
 <a id="replay-a-public-run"></a>
 ## 重放已有公共运行
 
-本仓库**不包含**历史 Sepolia 执行证据包。要重放一次新运行，请向运行者获取其 public run 目录，并确认其中包含 manifest、公开 setup、公开选票证明、链快照、sealed board、gate transcript（JSONL 或受支持的 compact 格式）、最终 release 记录、verification key 和所需合约产物。不要向运行者索取私钥、选票 witness 或明文 oracle 输入。
+本仓库**不包含**论文所记录的那次历史 Sepolia 运行的大体积 gate transcript；那份保存的运行包只能用 [`evidence/frozen_source_q5/`](evidence/README.md) 里冻结的发布前源码验证，不能用本目录的代码验证。运行记录、哈希和无需密钥的检查脚本在 [`evidence/`](evidence/README.md)。要重放一次**新的**运行，请向运行者获取其 public run 目录，并确认其中包含 manifest、公开 setup、公开选票证明、链快照、sealed board、gate transcript（JSONL 或受支持的 compact 格式）、最终 release 记录、verification key 和所需合约产物。不要向运行者索取私钥、选票 witness 或明文 oracle 输入。
 
 在仓库根目录构建合约产物并设置：
 
@@ -244,6 +408,7 @@ npm --prefix backend/js_protocol run replay:sepolia
 | `implementation/arbitrum` | `StrongN8Poll`、Groth16 verifier、Hardhat 配置、选票 fixture、合约测试和链上 board-binding 代码 |
 | `configs/reference/five_of_five_n8.json` | 机器可读的最终参考配置 |
 | `scripts/setup` | 生成全新的本地测试选票产物 |
+| `evidence` | 论文表格背后的原始运行记录、哈希、产生这些记录的冻结源码，以及无需密钥的复核脚本。见 [`evidence/README.md`](evidence/README.md)（英文） |
 
 Rust 不负责验证选票 Groth16 证明，也不负责部署或交互 Solidity。上述工作由 JavaScript 处理，再将 admission 通过的 ciphertext 交给 Rust。JS gate 实现保留为 reference/test oracle；本地规模实验总是使用 Rust DAG evaluator，Sepolia runner 则需设置 `CGY_NATIVE_BACKEND=1` 才会使用 Rust。
 
@@ -282,7 +447,7 @@ Rust 不负责验证选票 Groth16 证明，也不负责部署或交互 Solidity
 - 五取五 release 意味着任意一名 trustee 不可用都可能阻止结果输出；不声称系统级 liveness 保证。
 - artifact 和测试本身不能证明论文定理。
 - 选票 witness 仅在证明生成子进程中使用；tally 路径和 public replay 不会接收明文 oracle 或加权总和。
-- 仓库没有附带历史公共链运行证据包；全新的测试网实验需要有余额的测试网密钥，并会生成新的链上数据。
+- 论文记录的 Sepolia 运行以数据形式放在 `evidence/`，其 transcript 在 GitHub release 附件中；全新的测试网实验需要有余额的测试网密钥，并会生成新的链上数据。
 
 ## 许可证与上游依赖
 
