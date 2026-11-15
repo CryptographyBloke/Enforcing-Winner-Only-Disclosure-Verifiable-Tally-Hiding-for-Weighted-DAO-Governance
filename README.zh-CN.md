@@ -232,9 +232,11 @@ npm --prefix backend/js_protocol run compare:oracle
 
 | 阶段 | 做什么 | 预期输出（实测） | 实测耗时 |
 |---|---|---|---|
-| `run:local-scale` | 全新的测试用五 trustee setup、八张证明有效的选票、admission、sealed board、Rust 计算 134 个 gate、五份 share 释放 | `LOCAL_NATIVE_EXECUTION=PASS`、`N=8`、`GATES=134`、`FINAL_THRESHOLD=5_OF_5`、`ORACLE_INPUTS_ISOLATED=YES` | 约 30 秒 |
+| `run:local-scale` | 全新的测试用五 trustee setup、八张证明有效的选票、admission、sealed board、Rust 计算 134 个 gate、五份 share 释放 | `LOCAL_NATIVE_EXECUTION=PASS`、`N=8`、`GATES=134`、`FINAL_THRESHOLD=5_OF_5`、`ORACLE_INPUTS_ISOLATED=YES` | 约 30 到 40 秒，见下面的说明 |
 | `replay:local` | 独立进程重新验证 setup、证明、board、每个 gate、release 和各哈希，**不读取** oracle | `LOCAL_PUBLIC_REPLAY=PASS`、`SOURCE_GATES_VERIFIED=134`、`ORACLE_READ=NO` | 约 6 秒 |
 | `compare:oracle` | 仅在重放通过后：把释放出的比特与明文 oracle 比较 | `ORACLE_COMPARISON=PASS`，且 `RESULT_BIT` 等于 `ORACLE_RESULT_BIT` | 不到 1 秒 |
+
+**耗时与并行证明。** 八张选票的证明彼此独立，所以 `run:local-scale` 最多同时证明 3 张，每张在自己的进程里（`CGY_BALLOT_PROOF_CONCURRENCY`，默认 3）。在 24 线程的机器上，单个 snarkjs 证明已经用了约 11 个线程，所以同时超过 3 张没有帮助。在上述机器上交替运行同一份代码的实测：`CGY_BALLOT_PROOF_CONCURRENCY=1` 时证明阶段约 18 秒，默认值时约 10 秒。其余阶段每次运行都有波动（我们的运行里，五份 share 的 release 阶段在 7 秒到 15 秒之间），所以尝试别的取值时请对比 `manifest.json` 里的**证明**一项，而不是总耗时。证明本身和 board 的顺序不受影响：第 `i` 张选票始终是 `publicProofs[i]`。
 
 本地实验的选票权重与选择是固定的（`weights[i] = (37 i + 11) mod 256`，`votes[i] = (7 i + 1) mod 2`），密钥、随机数和证明则每次全新生成。所以**结果比特和各项计数每次都相同**（`n = 8`、`tau = 510`、134 个 gate、深度 72、结果比特 `0`），而哈希、证明和耗时每次不同。与论文本地规模表对照时，只比较结构性的列（gate 数与深度）。论文 `n = 8` 的耗时是在一台指定工作站上记录的，见 [`evidence/`](evidence/README.md)。
 
@@ -277,6 +279,7 @@ node -e "const t=require('./artifacts/local_five_trustee_n8_run_001/manifest.jso
 
 | 现象 | 原因与处理 |
 |---|---|
+| 第 5 步很慢，或选票证明阶段内存不足 | 八个 Groth16 证明在各自的进程里并行，默认同时 3 个。在 `run:local-scale` 之前把 `CGY_BALLOT_PROOF_CONCURRENCY` 设为更小的正整数（例如 `1`，表示像以前一样在当前进程里一次证明一个）。 |
 | 第 3 步报 `Circom 2.1.6 is required` | `circom --version` 输出了其他版本，或 Circom 不在 `PATH`。安装 2.1.6，或设置 `CIRCOM_BIN`（PowerShell：`$env:CIRCOM_BIN = "C:\tools\circom.exe"`）。 |
 | 第 3 步看起来卡住了 | 没有卡住。最后两个阶段（powers-of-tau 与 Groth16 密钥）约需 11 分钟且没有输出。 |
 | 第 5 步报 `E_LOCAL_RUN_EXISTS` 或 `E_LOCAL_ORACLE_EXISTS` | 该目录是上次运行留下的。两个变量都换成新的 `_002` 名字。 |

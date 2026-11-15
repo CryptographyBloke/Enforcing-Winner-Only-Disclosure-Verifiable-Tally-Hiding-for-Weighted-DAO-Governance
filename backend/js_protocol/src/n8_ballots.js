@@ -2,12 +2,34 @@
 
 const crypto = require("crypto");
 const fs = require("fs");
+const path = require("path");
+const { fork } = require("child_process");
 const { buildPoseidon, buildBabyjub } = require("circomlibjs");
 const snarkjs = require("snarkjs");
 const { requireCondition } = require("./errors");
 const { randomScalar } = require("./scalars");
+const { mapWithLimit, ballotProofConcurrency } = require("./bounded_concurrency");
 
 const DEPTH = 10;
+const PROVE_WORKER = path.join(__dirname, "..", "scripts", "prove_ballot_worker.js");
+
+// Prove one ballot in a fresh process. The witness travels over the IPC channel only.
+function proveInChildProcess(input, artifacts) {
+  return new Promise((resolve, reject) => {
+    const child = fork(PROVE_WORKER, [], { stdio: ["ignore", "inherit", "inherit", "ipc"] });
+    let answered = false;
+    child.once("message", (message) => {
+      answered = true;
+      if (message && message.ok) resolve({ proof: message.proof, publicSignals: message.publicSignals });
+      else reject(new Error(`E_BALLOT_PROVER: ${message && message.message}`));
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      if (!answered) reject(new Error(`E_BALLOT_PROVER: proof process exited with code ${code} before answering`));
+    });
+    child.send({ input, wasmPath: artifacts.wasmPath, zkeyPath: artifacts.zkeyPath });
+  });
+}
 
 function sha256File(filePath) {
   return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
@@ -86,19 +108,26 @@ async function prepareFreshN8Ballots({ committeeKey, pollId, votes, weights, art
     PK: [F.toString(PK[0]), F.toString(PK[1])],
   }));
   const verificationKey = JSON.parse(fs.readFileSync(checkedArtifacts.vkeyPath, "utf8"));
-  const publicProofs = [];
-  for (let index = 0; index < inputs.length; index += 1) {
+  // With concurrency 1 the proofs run one after another in this process, exactly as before. With more, each proof
+  // runs in its own child process (see scripts/prove_ballot_worker.js) and at most `concurrency` run at once.
+  // `publicProofs[i]` always belongs to ballot i, whatever order the proofs finish in, because the board order is
+  // the order of the ballots. `provingMs` is the duration of that one proof, so with concurrency the durations overlap.
+  const concurrency = Math.min(ballotProofConcurrency(), inputs.length);
+  const publicProofs = await mapWithLimit(inputs, concurrency, async (input, index) => {
     const started = process.hrtime.bigint();
-    const { proof, publicSignals } = await snarkjs.groth16.fullProve(inputs[index], checkedArtifacts.wasmPath, checkedArtifacts.zkeyPath);
+    const { proof, publicSignals } = concurrency === 1
+      ? await snarkjs.groth16.fullProve(input, checkedArtifacts.wasmPath, checkedArtifacts.zkeyPath)
+      : await proveInChildProcess(input, checkedArtifacts);
     requireCondition(await snarkjs.groth16.verify(verificationKey, publicSignals, proof), "E_BALLOT_PROOF", `fresh ballot ${index} failed independent Groth16 verification`);
     requireCondition(publicSignals[33] === registryRoot.toString(10), "E_BALLOT_ROOT", `fresh ballot ${index} registry root mismatch`);
     requireCondition(publicSignals[34] === String(pollId), "E_BALLOT_POLL", `fresh ballot ${index} poll mismatch`);
     requireCondition(publicSignals[35] === F.toString(PK[0]) && publicSignals[36] === F.toString(PK[1]), "E_BALLOT_PK", `fresh ballot ${index} committee key mismatch`);
-    publicProofs.push(Object.freeze({ index, proof, publicSignals, provingMs: Number(process.hrtime.bigint() - started) / 1e6 }));
-    inputs[index].identitySecret = "DESTROYED_TEST_ONLY_WITNESS";
-    inputs[index].r.fill("DESTROYED_TEST_ONLY_RANDOMNESS");
-    inputs[index].pathElements.fill("DESTROYED_TEST_ONLY_PATH");
-  }
+    const record = Object.freeze({ index, proof, publicSignals, provingMs: Number(process.hrtime.bigint() - started) / 1e6 });
+    input.identitySecret = "DESTROYED_TEST_ONLY_WITNESS";
+    input.r.fill("DESTROYED_TEST_ONLY_RANDOMNESS");
+    input.pathElements.fill("DESTROYED_TEST_ONLY_PATH");
+    return record;
+  });
   records.length = 0;
   identities.length = 0;
   return Object.freeze({

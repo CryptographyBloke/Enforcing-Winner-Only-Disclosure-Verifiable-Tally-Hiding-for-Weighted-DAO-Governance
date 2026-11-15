@@ -229,9 +229,11 @@ npm --prefix backend/js_protocol run compare:oracle
 
 | Stage | What it does | Expected output (observed) | Time observed |
 |---|---|---|---|
-| `run:local-scale` | fresh test-only five-trustee setup, eight proof-valid ballots, admission, sealed board, Rust evaluation of 134 gates, five-share release | `LOCAL_NATIVE_EXECUTION=PASS`, `N=8`, `GATES=134`, `FINAL_THRESHOLD=5_OF_5`, `ORACLE_INPUTS_ISOLATED=YES` | about 30 s |
+| `run:local-scale` | fresh test-only five-trustee setup, eight proof-valid ballots, admission, sealed board, Rust evaluation of 134 gates, five-share release | `LOCAL_NATIVE_EXECUTION=PASS`, `N=8`, `GATES=134`, `FINAL_THRESHOLD=5_OF_5`, `ORACLE_INPUTS_ISOLATED=YES` | about 30 to 40 s, see the note below |
 | `replay:local` | a separate process re-verifies setup, proofs, board, every gate, the release and the hashes, **without** reading the oracle | `LOCAL_PUBLIC_REPLAY=PASS`, `SOURCE_GATES_VERIFIED=134`, `ORACLE_READ=NO` | about 6 s |
 | `compare:oracle` | only after replay passes: compares the released bit with the plaintext oracle | `ORACLE_COMPARISON=PASS`, and `RESULT_BIT` equal to `ORACLE_RESULT_BIT` | under 1 s |
+
+**Timing and parallel proving.** The eight ballot proofs are independent, so `run:local-scale` proves up to 3 at once, each in its own process (`CGY_BALLOT_PROOF_CONCURRENCY`, default 3). One snarkjs proof already uses about eleven threads on a 24-thread machine, so more than 3 at a time does not help. Measured on the machine above, alternating runs of the same code: the proving stage took about 18 s with `CGY_BALLOT_PROOF_CONCURRENCY=1` and about 10 s with the default. The other stages vary from run to run (the five-share release stage ranged from 7 s to 15 s in our runs), so compare the **proving** line of `manifest.json`, not the total, when you try other values. The proofs and the board order are unaffected: ballot `i` is always `publicProofs[i]`.
 
 The ballot weights and votes of this local run are fixed (`weights[i] = (37 i + 11) mod 256`, `votes[i] = (7 i + 1) mod 2`), while keys, randomness and proofs are fresh each time. So the **result bit and the counts are the same on every run** (`n = 8`, `tau = 510`, 134 gates, depth 72, result bit `0`). Hashes, proofs and timings change from run to run. Compare the result with the paper's local-scale table only for the structural columns (gates and depth). The paper's `n = 8` timings were recorded on one named workstation and are in [`evidence/`](evidence/README.md).
 
@@ -274,6 +276,7 @@ All of them are ignored by git.
 
 | Symptom | Cause and fix |
 |---|---|
+| Step 5 is slow, or the machine runs out of memory during the ballot-proof stage | The eight Groth16 proofs run in parallel in separate processes. The default is 3 at a time. Set `CGY_BALLOT_PROOF_CONCURRENCY` to a smaller positive integer (for example `1`, which proves one at a time in the current process as before) before `run:local-scale`. |
 | Step 3 stops with `Circom 2.1.6 is required` | `circom --version` reports another version, or Circom is not on `PATH`. Install 2.1.6, or set `CIRCOM_BIN` (PowerShell: `$env:CIRCOM_BIN = "C:\tools\circom.exe"`). |
 | Step 3 appears frozen | It is not. The last two stages (powers-of-tau and the Groth16 key) take about 11 minutes with no output. |
 | Step 5 stops with `E_LOCAL_RUN_EXISTS` or `E_LOCAL_ORACLE_EXISTS` | The directory exists from an earlier run. Choose new `_002` names for both variables. |
