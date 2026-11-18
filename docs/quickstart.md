@@ -12,6 +12,24 @@ This guide runs a fresh local `n=8` experiment from a clean Windows PowerShell c
 | Circom | 2.1.6 | Set `CIRCOM_BIN` if it is not on `PATH` |
 | Disk | 2 GiB free for `n=8`; 10 GiB recommended for `n=1024` | Large transcripts remain in each run directory |
 
+On a fresh Windows machine, install Rustup from the [official Rust distribution](https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe), then install the pinned toolchain. The MSVC toolchain also needs the Visual Studio C++ build tools. The Circom executable below is the Windows binary from the [official v2.1.6 release](https://github.com/iden3/circom/releases/tag/v2.1.6):
+
+```powershell
+$rustupInstaller = Join-Path $env:TEMP "rustup-init.exe"
+Invoke-WebRequest "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe" -OutFile $rustupInstaller
+& $rustupInstaller -y --default-toolchain none --profile minimal
+$env:Path += ";$env:USERPROFILE\.cargo\bin"
+rustup toolchain install 1.98.1 --profile minimal
+
+$toolDirectory = Join-Path $env:LOCALAPPDATA "winner-only-disclosure\tools"
+New-Item -ItemType Directory -Force $toolDirectory | Out-Null
+$env:CIRCOM_BIN = Join-Path $toolDirectory "circom-2.1.6.exe"
+Invoke-WebRequest "https://github.com/iden3/circom/releases/download/v2.1.6/circom-windows-amd64.exe" -OutFile $env:CIRCOM_BIN
+& $env:CIRCOM_BIN --version
+```
+
+Install Node.js 20 or later separately if it is not already available. Open a fresh PowerShell session after installing Rustup if the current shell does not find `rustup`, `rustc`, or `cargo`.
+
 ## One-command `n=8`
 
 ```powershell

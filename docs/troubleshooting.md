@@ -4,6 +4,7 @@
 |---|---|
 | `Circom 2.1.6 is required` | Install Circom 2.1.6 and confirm `circom --version`. Set `$env:CIRCOM_BIN` to its executable if needed. |
 | `Rust 1.98.1 is pinned` or `cargo` is unavailable | Install rustup and the pinned toolchain from `rust-toolchain.toml`; reopen the shell and check `rustc --version` and `cargo --version`. |
+| Cargo cannot find `link.exe` on Windows | Install the Visual Studio C++ build tools required by the Rust MSVC toolchain, open a new shell, then rerun the build. |
 | Missing `native/target/release/cgy-native` | Run `cargo build --release --locked --manifest-path native/Cargo.toml`, or use `-BuildArtifacts` on a fresh checkout. |
 | Missing ballot WASM, zkey, or verification key | Install Circom 2.1.6, then run `npm ci --prefix circuits`, `npm ci --prefix protocol`, and `npm --prefix protocol run build:ballot`. The builder refuses to overwrite existing artifacts. |
 | `E_LOCAL_SCALE_N` | Accepted sizes are exactly `8`, `64`, `256`, and `1024`. |
