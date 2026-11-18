@@ -15,6 +15,8 @@ The local pipeline uses `a=5`, Shamir degree `t=4`, `q_dec=5`, eight-bit weights
 
 Local runs use `tau=floor(255*n/4)`. The Arbitrum Sepolia reference uses `tau=500` at `n=8`; the corresponding local value is `510`. Do not compare those two thresholds as if they were the same experiment.
 
+The GitHub Actions `workflow_dispatch` reproduction job defaults to `n=8`. Its `sizes` input accepts a comma-separated local selection such as `256` or `8,64`; the same disk-space and verification gates apply as for a PowerShell or Bash run.
+
 ## Historical Q5 timings
 
 The following values are read from the retained `evidence/data/performance_local.csv`. The source, machine, and run IDs are historical; timings are not promises for a new host.
