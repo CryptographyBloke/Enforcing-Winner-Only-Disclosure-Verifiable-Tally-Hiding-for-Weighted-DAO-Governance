@@ -11,7 +11,7 @@ const childProcess = require("child_process");
 const root = path.resolve(__dirname, "..", "..");
 const source = path.join(root, "circuits", "prototypes", "strong_bit", "vote_bit_full_8.circom");
 const circomlibRoot = path.join(root, "circuits", "node_modules");
-const artifactsRoot = path.join(root, "implementation", "logs", "bit_ballot");
+const artifactsRoot = path.join(root, "artifacts", "ballot");
 const compileDirectory = path.join(artifactsRoot, "build", "matrix", "vote_bit_full_8", "O1");
 const zkeyDirectory = path.join(artifactsRoot, "groth16", "vote_bit_full_8");
 const outputPrefix = path.join(compileDirectory, "vote_bit_full_8");
@@ -21,7 +21,7 @@ const wasmPath = path.join(compileDirectory, "vote_bit_full_8_js", "vote_bit_ful
 const finalZkeyPath = path.join(zkeyDirectory, "vote_bit_full_8_final.zkey");
 const initialZkey = path.join(zkeyDirectory, "vote_bit_full_8_initial.zkey");
 const vkeyPath = path.join(zkeyDirectory, "verification_key.json");
-const snarkjsCli = path.join(root, "backend", "js_protocol", "node_modules", "snarkjs", "build", "cli.cjs");
+const snarkjsCli = path.join(root, "protocol", "node_modules", "snarkjs", "build", "cli.cjs");
 
 function fail(message) { throw new Error(`E_BALLOT_BUILD: ${message}`); }
 
@@ -49,7 +49,7 @@ function main() {
   const circom = process.env.CIRCOM_BIN || "circom";
   const version = run(circom, ["--version"], "Checking Circom version").trim();
   if (!version.includes("2.1.6")) fail(`Circom 2.1.6 is required; found ${version}`);
-  if (!fs.existsSync(snarkjsCli)) fail("run npm ci in backend/js_protocol first");
+  if (!fs.existsSync(snarkjsCli)) fail("run npm ci --prefix protocol first");
   fs.mkdirSync(compileDirectory, { recursive: true });
   fs.mkdirSync(zkeyDirectory, { recursive: true });
   for (const generated of [r1csPath, symPath, wasmPath, initialZkey, finalZkeyPath, vkeyPath]) {
