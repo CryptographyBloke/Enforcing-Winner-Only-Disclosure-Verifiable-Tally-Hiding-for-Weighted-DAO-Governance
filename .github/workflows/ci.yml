@@ -70,7 +70,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: local-n8-public-run
+          name: local-scale-public-runs-${{ github.run_id }}
           path: runs/*/public/
           if-no-files-found: error
           retention-days: 30
