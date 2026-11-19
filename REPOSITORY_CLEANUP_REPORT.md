@@ -100,9 +100,9 @@ README 和实验文档将历史 Q5 表标为历史，将本次清理版 run 单�
 ## 9. GitHub Publication
 
 - 功能分支：`cleanup/reproducibility-2026-11`。
-- 当前清理和复现 PR：[#4](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/pull/4)。分支提交及最新 checks 以 GitHub 页面为准。
+- 清理和复现 PR [#4](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/pull/4) 已于 2026-11-19 合并；merge commit 为 `e3c09a4bf5547bb2b6b37dac5c86e47608a1fcd5`。最新 `fast-validation` 的 push 与 pull_request checks 均通过；manual reproduction job 按设计跳过。
 - 新证据 release/tag 已发布：[`blocksys2027-evidence-v2-cleaned-local-2026-11`](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11)，tag 指向 fresh run 源码 commit `c60db5d7cb006c07db68743751a100e5c8e4260e`，附件仅含本次四规模新运行的 public-safe 文件和摘要。历史 v1 不变。
-- 报告和 README 更新提交 `b4d4f792525cfed1133555977f6899e1b51c0ecc` 已推送到 PR #4；该提交的 CI/合并状态见 PR 页面。不得覆盖/删除 v1，不要把私有 `runs/<id>/private/` 上传。
+- README 实验表更新提交 `b4d4f792525cfed1133555977f6899e1b51c0ecc`、最终 handoff 报告提交 `11b6cd42733e2fbfba8ac51b84cfbf336fe11ac7` 均包含在该 merge commit 中。不得覆盖/删除 v1，不要把私有 `runs/<id>/private/` 上传。
 
 ## 10. Author Reproduction Guide
 
@@ -149,4 +149,4 @@ $env:CIRCOM_BIN = "$env:LOCALAPPDATA\winner-only-disclosure\tools\circom-2.1.6.e
 
 ## 11. Final Status
 
-**READY_WITH_LIMITATIONS** — 四种规模均已在清理版 Rust release 后端上新鲜完成并通过验证，结构值正确，公共安全证据包已发布并校验。历史性能比当前 fresh 大规模测量更快，差异原因未定位；因此不能称为历史 timing replication，也不应替换论文中的 Q5 数值。PR #4 的主分支合并状态见 GitHub；没有运行链上实验。
+**READY_WITH_LIMITATIONS** — 仓库清理、四规模 fresh Rust pipeline、public-safe evidence v2 发布和 PR #4 合并均已完成。四种规模通过验证且结构值正确。历史性能比当前 fresh 大规模测量更快，差异原因未定位；因此不能称为历史 timing replication，也不应替换论文中的 Q5 数值。没有运行链上实验。
