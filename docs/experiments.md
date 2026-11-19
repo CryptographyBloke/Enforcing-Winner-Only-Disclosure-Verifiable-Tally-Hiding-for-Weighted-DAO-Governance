@@ -105,3 +105,29 @@ node protocol/scripts/compare_replay_with_oracle.js
 `HARDHAT_NETWORK=arbitrumSepolia` is required for the deployment to target the testnet. The pipeline writes public verification files under `runs/<run-id>/public` and cleartext oracle inputs to a sibling private directory. The oracle comparison refuses to open those inputs until independent replay passes; it then records only the comparison result and timings in the public summary and manifest. Never print or commit the two credential variables. The build creates local test-only proving artifacts and must not be treated as a trusted setup.
 
 The archived Sepolia reference used chain ID `421614`, poll ID `910004`, eight accepted ballots, 134 gates, and `tau=500`. It is testnet evidence, not a production Arbitrum DAO deployment. The public archive and its limitations are described in [provenance.md](provenance.md) and [`evidence/README.md`](../evidence/README.md).
+
+## Authenticated TCP transcript transport (NETWORK-02)
+
+This experiment replays the signed public trustee messages from a validated local run through a separate TCP board and five client processes. Each client receives the public records assigned to one trustee ID. The board persists each event and seals the existing phase vectors. Public replay and the isolated oracle comparison run after transport completes.
+
+Run a fresh local experiment first and set `$sourceRun` to its public output directory. Replace the example path below with that run's path when reproducing with fresh inputs. For the n=8 source run used in NETWORK-02:
+
+```powershell
+$sourceRun = 'runs/2026-11-19_local_n8_8665073c/public'
+node protocol/scripts/run_tcp_transcript_transport.js --source-run $sourceRun --one-way-delay-ms 0
+node protocol/scripts/run_tcp_transcript_transport.js --source-run $sourceRun --one-way-delay-ms 10
+node protocol/scripts/run_tcp_transcript_transport.js --source-run $sourceRun --one-way-delay-ms 50
+```
+
+The delay value is applied in each direction by the application. Values `10` and `50` model nominal 20 ms and 100 ms RTT; the manifests record the measured PING distribution. This Windows run uses IPv4 loopback and application-level delay. It records JSON framing bytes at the TCP application layer, board fsync time, signature verification, phase-seal timings, client RTT samples, independent replay time, oracle result, and source artifact hashes.
+
+For n=64, first create a fresh local n=64 run and pass its public directory with `--source-run`. NETWORK-02 completed the 0 ms and 20 ms profiles for n=64. The 100 ms n=64 profile is not included. Each n=8 profile has three successful repetitions; the n=64 profiles have one run each.
+
+Summarize generated network manifests and create a public-safe local bundle with:
+
+```powershell
+node scripts/summarize-network-runs.js
+node scripts/export-network-evidence.js
+```
+
+Both tools write under ignored `runs/`. The exporter copies public replay artifacts, the signed canonical board log, manifests, result logs, CSV, and replay commands. It excludes the private oracle directory and workload input files. The TCP experiment replays existing signatures; the Rust CGY backend measurement is recorded separately in the source run manifest. See [the NETWORK-02 report](../reports/NETWORK-02.md) for results and the [manuscript insertion fragment](../paper/network_results.tex).

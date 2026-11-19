@@ -64,6 +64,20 @@ The included BlockSys 2027 PDF reports the historical five-of-five Q5 series. Th
 
 The source, machine, and run IDs are historical. Totals follow the Q5 manifest `totalSeconds` field, which includes a small setup interval not shown as a separate column. The table is not a performance claim about a new host or a fresh run of the maintained checkout. New local runs validate the current implementation and are kept separate from the paper measurements. See [the experiment guide](docs/experiments.md) and [version provenance](docs/provenance.md).
 
+## TCP transcript transport experiment
+
+NETWORK-02 replayed the existing signed trustee messages through five TCP client processes and a separate persistent board service. The experiment measures transport, board persistence, and public replay; its clients transport public records from the local CGY source run.
+
+| n | Target RTT | Measured RTT median (p95) | TCP wall median (range) | Seals | TCP application bytes |
+|---:|---:|---:|---:|---:|---:|
+| 8 | 0 ms | 0.194 (0.495) ms | 8.269 (8.136–9.180) s | 1,614 | 67,767,585 |
+| 8 | 20 ms | 31.227 (39.989) ms | 57.431 (57.418–57.891) s | 1,614 | 67,768,165 |
+| 8 | 100 ms | 116.213 (126.381) ms | 195.861 (194.678–196.362) s | 1,614 | 67,768,745 |
+| 64 | 0 ms | 0.199 (0.332) ms | 74.509 s | 13,038 | 548,458,033 |
+| 64 | 20 ms | 31.091 (39.614) ms | 469.832 s | 13,038 | 548,458,613 |
+
+Each n=8 profile has three successful runs; each n=64 profile has one. The n=64, 100 ms profile remains unmeasured. Byte totals count TCP application framing, including board fan-out. They exclude packet headers. The trustee clients replayed centrally generated signed records, so these figures describe authenticated transcript transport and replay. See [the full report](reports/NETWORK-02.md) and [the insertion-ready manuscript fragment](paper/network_results.tex).
+
 ## Security scope
 
 The paper proves accepted-result correctness even with malicious trustees, restricted-I/O SUC security against a static active coalition smaller than the five-share decryption threshold, and a winner-only disclosure corollary for the actual sealed board. The implementation's five trustee roles are co-located and use test-only setup; this is not distributed key generation or a production deployment. See [docs/security-model.md](docs/security-model.md).

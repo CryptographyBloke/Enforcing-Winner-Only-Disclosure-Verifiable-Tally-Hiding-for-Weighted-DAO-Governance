@@ -1,0 +1,21 @@
+\paragraph{Authenticated TCP transcript transport.}
+Five TCP client processes replayed the canonical signed trustee-message workload through a separate durable board service on Windows loopback. The clients sent public records from the existing local run; the experiment measures board transport, persistence, and public replay. Each row passed independent public replay and isolated-oracle comparison. Injected delays were applied symmetrically in the application, so measured RTT includes scheduler and process overhead.
+
+\begin{table}[t]
+\centering
+\caption{Authenticated transcript transport replay. Bytes are TCP application framing bytes.}
+\label{tab:network-transport}
+\begin{tabular}{rrrrrr}
+\hline
+$n$ & Target RTT & Measured RTT (median/p95) & TCP wall time & Seals & App bytes \\
+\hline
+8 & 0 ms & 0.194 / 0.495 ms & 8.269 s & 1,614 & 67,767,585 \\
+8 & 20 ms & 31.227 / 39.989 ms & 57.431 s & 1,614 & 67,768,165 \\
+8 & 100 ms & 116.213 / 126.381 ms & 195.861 s & 1,614 & 67,768,745 \\
+64 & 0 ms & 0.199 / 0.332 ms & 74.509 s & 13,038 & 548,458,033 \\
+64 & 20 ms & 31.091 / 39.614 ms & 469.832 s & 13,038 & 548,458,613 \\
+\hline
+\end{tabular}
+\end{table}
+
+For $n=8$, each delay profile comprises three runs; the displayed wall time is the median and ranged from 8.136--9.180 s, 57.418--57.891 s, and 194.678--196.362 s, respectively. RTT percentiles aggregate 375 PING samples per profile. The $n=64$ profiles each comprise one run with 125 PING samples. The $n=64$, 100-ms profile remains unmeasured. The replay sealed 12 phases per gate plus six final-release phases (1,614 barriers for 134 gates and 13,038 for 1,086 gates). The sequential phase schedule includes board persistence and per-phase fan-out.
