@@ -1,8 +1,6 @@
-# Enforced Winner-Only Disclosure
+# Enforced Winner-Only Disclosure: Verifiable Tally Hiding for Weighted On-Chain Governance
 
-**Verifiable Tally Hiding for Weighted DAO Governance**
-
-Jiayu Li and Gongli Li · Henan Normal University · [IACR Cryptology ePrint 2026/1773](https://eprint.iacr.org/2026/1773) · BlockSys 2027
+Jiayu Li and Gongli Li · Henan Normal University · [IACR Cryptology ePrint 2026/1773](https://eprint.iacr.org/2026/1773) · BlockSys 2027 · [Submission PDF](paper/BlockSys2027_submission.pdf)
 
 This repository contains the reference implementation and reproducibility materials for encrypted weighted voting. It shows how to verify a governance outcome without publishing the exact weighted tally. It is a research prototype, not production DAO voting software.
 
@@ -51,33 +49,20 @@ After setup, run additional sizes with:
 .\scripts\reproduce.ps1 -Sizes 8,64,256,1024
 ```
 
-Bash entry point: `bash scripts/reproduce.sh 8,64,256,1024`. Detailed setup, outputs, resource estimates, and public-chain instructions are in [docs/quickstart.md](docs/quickstart.md) and [docs/experiments.md](docs/experiments.md).
+Bash entry point: `bash scripts/reproduce.sh 8,64,256,1024`. These commands create fresh validation runs; they do not reproduce the historical timings in the included PDF. Detailed setup, outputs, resource estimates, and public-chain instructions are in [docs/quickstart.md](docs/quickstart.md) and [docs/experiments.md](docs/experiments.md).
 
-## Fresh local runs
+## Results in the submission PDF
 
-The cleaned implementation completed fresh local runs at all four sizes on 2026-11-19. Every run passed ballot verification, exact board binding, five-of-five release, independent public replay, and isolated oracle comparison.
+The included BlockSys 2027 PDF reports the historical five-of-five Q5 series. These are the measurements in its Table 1, read from the run manifests pinned by the [evidence v1 archive](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v1).
 
-| n | gates | depth | proving | Rust backend | complete pipeline | verification |
-|---:|---:|---:|---:|---:|---:|:---:|
-| 8 | 134 | 72 | 17.947 s | 5.302 s | 38.645 s | PASS |
-| 64 | 1,086 | 147 | 150.325 s | 24.397 s | 226.338 s | PASS |
-| 256 | 4,350 | 207 | 592.009 s | 83.640 s | 886.193 s | PASS |
-| 1,024 | 17,406 | 275 | 2,363.563 s | 322.893 s | 3,507.043 s | PASS |
+| n | gates | depth | proving (s) | admission (s) | Rust backend (s) | release (s) | replay (s) | total (s) |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 8 | 134 | 72 | 10.04 | 0.15 | 4.05 | 6.93 | 0.92 | 22.12 |
+| 64 | 1,086 | 147 | 146.51 | 1.28 | 15.98 | 8.93 | 11.68 | 184.41 |
+| 256 | 4,350 | 207 | 368.45 | 5.22 | 47.13 | 8.40 | 32.91 | 462.13 |
+| 1,024 | 17,406 | 275 | 1,414.93 | 19.16 | 156.72 | 4.57 | 114.54 | 1,709.95 |
 
-These are new cleaned-workspace measurements, not historical Q5 results. The gate counts and depths match; the larger runs are materially slower than the historical measurements and the cause has not been isolated. See the [fresh evidence release](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11) and [full phase table](docs/experiments.md#fresh-cleaned-workspace-runs-2026-11-19). The paper's historical timings below remain the authoritative Q5 measurements.
-
-## Historical Q5 measurements
-
-These are published measurements from the frozen Q5 source and original workstation. They are not runs of the cleaned checkout. Timings vary by machine.
-
-| n | gates | depth | ballot proving | backend | producer replay | total |
-|---:|---:|---:|---:|---:|---:|---:|
-| 8 | 134 | 72 | 10.044 s | 4.055 s | 0.919 s | 22.123 s |
-| 64 | 1,086 | 147 | 146.507 s | 15.981 s | 11.684 s | 184.408 s |
-| 256 | 4,350 | 207 | 368.449 s | 47.129 s | 32.910 s | 462.134 s |
-| 1,024 | 17,406 | 275 | 1,414.928 s | 156.715 s | 114.540 s | 1,709.946 s |
-
-Phase data is in [`evidence/data/performance_local.csv`](evidence/data/performance_local.csv). The original archive and hashes are preserved in the [blocksys2027-evidence-v1 release](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v1). New runs are written under ignored `runs/` directories and summarized from generated artifacts; these historical values are never used as fresh results.
+The source, machine, and run IDs are historical. Totals follow the Q5 manifest `totalSeconds` field, which includes a small setup interval not shown as a separate column. The table is not a performance claim about a new host or a fresh run of the maintained checkout. New local runs validate the current implementation and are kept separate from the paper measurements. See [the experiment guide](docs/experiments.md) and [version provenance](docs/provenance.md).
 
 ## Security scope
 
@@ -98,7 +83,7 @@ The archived `n=8` testnet experiment used chain ID `421614`, accepted eight bal
 | [`configs/reference/`](configs/reference/five_of_five_n8.json) | Five-of-five parameters and local sizes |
 | [`scripts/`](scripts/reproduce.ps1) | Setup, reproduction, verification, summaries, and safe exports |
 | [`docs/`](docs/architecture.md) | Protocol, security, reproduction, mapping, and provenance guides |
-| [`evidence/`](evidence/README.md) | Historical Q5 records, frozen source, and verification instructions |
+| [`evidence/`](evidence/README.md) | Hash and link for the archived paper evidence |
 | `runs/` | Ignored new experiment output; only `runs/README.md` is tracked |
 
 ## License and citation
@@ -108,7 +93,7 @@ Code is licensed under [GPL-3.0](LICENSE). The CGY toolbox is credited to Véron
 ```bibtex
 @misc{li2026enforcing,
   author       = {Jiayu Li and Gongli Li},
-  title        = {Enforcing Winner-Only Disclosure: Verifiable Tally Hiding for Weighted {DAO} Governance},
+  title        = {Enforced Winner-Only Disclosure: Verifiable Tally Hiding for Weighted On-Chain Governance},
   howpublished = {Cryptology ePrint Archive, Paper 2026/1773},
   year         = {2026},
   url          = {https://eprint.iacr.org/2026/1773}

@@ -1,8 +1,6 @@
-# 强制仅披露获胜结果
+# 强制仅披露获胜结果：面向加权链上治理的可验证计票隐藏
 
-**面向加权 DAO 治理的可验证计票隐藏**
-
-作者：Jiayu Li、Gongli Li · 单位：河南师范大学 · [IACR Cryptology ePrint 2026/1773](https://eprint.iacr.org/2026/1773) · BlockSys 2027
+作者：Jiayu Li、Gongli Li · 单位：河南师范大学 · [IACR Cryptology ePrint 2026/1773](https://eprint.iacr.org/2026/1773) · BlockSys 2027 · [提交版 PDF](paper/BlockSys2027_submission.pdf)
 
 本仓库提供加密加权投票的参考实现与可复现实验材料，目标是在不公开精确加权总票数的情况下验证治理结果。这是研究原型，不是可直接用于生产 DAO 的投票系统。
 
@@ -51,33 +49,20 @@ flowchart LR
 .\scripts\reproduce.ps1 -Sizes 8,64,256,1024
 ```
 
-Bash 入口：`bash scripts/reproduce.sh 8,64,256,1024`。详细安装、输出目录、资源估计和链上说明见[快速指南](docs/quickstart.md)和[实验指南](docs/experiments.md)。
+Bash 入口：`bash scripts/reproduce.sh 8,64,256,1024`。这些命令会生成新的验证运行，不会重现随附论文中的历史计时。详细安装、输出目录、资源估计和链上说明见[快速指南](docs/quickstart.md)和[实验指南](docs/experiments.md)。
 
-## 清理后本地新实验
+## 提交论文中的实验结果
 
-维护版已于 2026-11-19 完成四种规模的全新本地实验。每次运行均通过选票证明、精确 board 绑定、五取五 release、独立公共重放和隔离 oracle 比对。
+随仓库提供的 BlockSys 2027 PDF 报告的是历史五取五 Q5 实验。下表对应论文表 1，数据来自带清单校验的 [evidence v1 归档](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v1)。
 
-| n | 门数 | 深度 | 证明 | Rust 后端 | 完整 pipeline | 验证 |
-|---:|---:|---:|---:|---:|---:|:---:|
-| 8 | 134 | 72 | 17.947 秒 | 5.302 秒 | 38.645 秒 | PASS |
-| 64 | 1,086 | 147 | 150.325 秒 | 24.397 秒 | 226.338 秒 | PASS |
-| 256 | 4,350 | 207 | 592.009 秒 | 83.640 秒 | 886.193 秒 | PASS |
-| 1,024 | 17,406 | 275 | 2,363.563 秒 | 322.893 秒 | 3,507.043 秒 | PASS |
+| n | 门数 | 深度 | 证明（秒） | admission（秒） | Rust 后端（秒） | release（秒） | replay（秒） | 总计（秒） |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 8 | 134 | 72 | 10.04 | 0.15 | 4.05 | 6.93 | 0.92 | 22.12 |
+| 64 | 1,086 | 147 | 146.51 | 1.28 | 15.98 | 8.93 | 11.68 | 184.41 |
+| 256 | 4,350 | 207 | 368.45 | 5.22 | 47.13 | 8.40 | 32.91 | 462.13 |
+| 1,024 | 17,406 | 275 | 1,414.93 | 19.16 | 156.72 | 4.57 | 114.54 | 1,709.95 |
 
-这些是清理后源码生成的新测量，不是历史 Q5 结果的复现。门数和调度深度一致；大规模运行明显慢于历史测量，目前尚未定位原因。见[新鲜实验完整结果](docs/experiments.md#fresh-cleaned-workspace-runs-2026-11-19)和[独立 evidence v2 发布](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11)。下方历史测量仍是论文报告的权威 Q5 数据。
-
-## 历史 Q5 测量
-
-下列数值来自历史冻结版 Q5 源码和原测试工作站，不是清理后 checkout 产生的结果。运行时间随机器变化。
-
-| n | 门数 | 深度 | 选票证明 | 后端 | 生产端重放 | 总计 |
-|---:|---:|---:|---:|---:|---:|---:|
-| 8 | 134 | 72 | 10.044 秒 | 4.055 秒 | 0.919 秒 | 22.123 秒 |
-| 64 | 1,086 | 147 | 146.507 秒 | 15.981 秒 | 11.684 秒 | 184.408 秒 |
-| 256 | 4,350 | 207 | 368.449 秒 | 47.129 秒 | 32.910 秒 | 462.134 秒 |
-| 1,024 | 17,406 | 275 | 1,414.928 秒 | 156.715 秒 | 114.540 秒 | 1,709.946 秒 |
-
-各阶段数据见[`evidence/data/performance_local.csv`](evidence/data/performance_local.csv)。原始证据归档及其哈希保存在 [blocksys2027-evidence-v1 release](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v1)。新实验写入 Git 忽略的 `runs/`，并从实际生成的产物中汇总，不会预填这些历史数字。
+源码、机器和运行 ID 均属于历史记录。总计列采用 Q5 manifest 的 `totalSeconds`，其中包含一小段未单独列出的 setup 时间。此表不代表维护版 checkout 在新机器或新运行上的性能。当前维护版的新实验用于验证实现，和论文历史数据分开保存。详见[实验指南](docs/experiments.md)及[版本来源说明](docs/provenance.md)。
 
 ## 安全范围
 
@@ -98,7 +83,7 @@ Bash 入口：`bash scripts/reproduce.sh 8,64,256,1024`。详细安装、输出�
 | [`configs/reference/`](configs/reference/five_of_five_n8.json) | 五取五参数和本地实验规模 |
 | [`scripts/`](scripts/reproduce.ps1) | setup、一键复现、结果核验、汇总与安全导出 |
 | [`docs/`](docs/architecture.md) | 架构、协议、安全、复现、映射和来源说明 |
-| [`evidence/`](evidence/README.md) | 历史 Q5 记录、冻结源码和核验说明 |
+| [`evidence/`](evidence/README.md) | 历史论文证据归档链接与哈希 |
 | `runs/` | 新实验的忽略输出，仅跟踪 `runs/README.md` |
 
 ## 许可证与引用
@@ -108,7 +93,7 @@ Bash 入口：`bash scripts/reproduce.sh 8,64,256,1024`。详细安装、输出�
 ```bibtex
 @misc{li2026enforcing,
   author       = {Jiayu Li and Gongli Li},
-  title        = {Enforcing Winner-Only Disclosure: Verifiable Tally Hiding for Weighted {DAO} Governance},
+  title        = {Enforced Winner-Only Disclosure: Verifiable Tally Hiding for Weighted On-Chain Governance},
   howpublished = {Cryptology ePrint Archive, Paper 2026/1773},
   year         = {2026},
   url          = {https://eprint.iacr.org/2026/1773}
