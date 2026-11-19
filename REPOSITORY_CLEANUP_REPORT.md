@@ -56,7 +56,7 @@
 
 本次 n=1,024 JSONL 为 `3,539,239,193` bytes，compact transcript 为 `956,381,856` bytes；n=256 JSONL 为 `884,274,559` bytes。新结果与历史 Q5 的具体口径不同，尤其完整 pipeline 多含独立 replay、compact encoding、oracle comparison；不能直接比较总时间。
 
-新运行原始目录在本机 `runs/`（Git 忽略）；白名单公开文件已单独打包成 `blocksys2027-evidence-v2-cleaned-local-2026-11` release，各包均低于 2 GB。该 release 的资产 SHA-256 清单随发布资产附上。四份 public export 的逐文件清单共 59 项，均与 `runs/public_exports/SHA256SUMS.txt` 匹配。
+新运行原始目录在本机 `runs/`（Git 忽略）；白名单公开文件已单独打包成已发布的 [`blocksys2027-evidence-v2-cleaned-local-2026-11`](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11) release，各包均低于 2 GB。该 release 的 [资产 SHA-256 清单](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/download/blocksys2027-evidence-v2-cleaned-local-2026-11/SHA256SUMS-evidence-v2.txt)记录 7 个 tar.gz 的 hash；GitHub 记录的每个 digest 均与本地计算值相同。四份 public export 的逐文件清单共 59 项，均与 `runs/public_exports/SHA256SUMS.txt` 匹配。
 
 ## 6. Verification
 
@@ -101,8 +101,8 @@ README 和实验文档将历史 Q5 表标为历史，将本次清理版 run 单�
 
 - 功能分支：`cleanup/reproducibility-2026-11`。
 - 当前清理和复现 PR：[#4](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/pull/4)。分支提交及最新 checks 以 GitHub 页面为准。
-- 预期新证据 release/tag：[`blocksys2027-evidence-v2-cleaned-local-2026-11`](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11)，目标只包含本次四规模新运行的 public-safe 文件和摘要。历史 v1 不变。
-- `main` 合并和新 evidence release 的最终 GitHub 状态应以 PR/release 页面及本报告最后更新的提交状态为准。不得覆盖/删除 v1，不要把私有 `runs/<id>/private/` 上传。
+- 新证据 release/tag 已发布：[`blocksys2027-evidence-v2-cleaned-local-2026-11`](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11)，tag 指向 fresh run 源码 commit `c60db5d7cb006c07db68743751a100e5c8e4260e`，附件仅含本次四规模新运行的 public-safe 文件和摘要。历史 v1 不变。
+- 报告和 README 更新提交 `b4d4f792525cfed1133555977f6899e1b51c0ecc` 已推送到 PR #4；该提交的 CI/合并状态见 PR 页面。不得覆盖/删除 v1，不要把私有 `runs/<id>/private/` 上传。
 
 ## 10. Author Reproduction Guide
 
@@ -149,4 +149,4 @@ $env:CIRCOM_BIN = "$env:LOCALAPPDATA\winner-only-disclosure\tools\circom-2.1.6.e
 
 ## 11. Final Status
 
-**READY_WITH_LIMITATIONS** — 四种规模均已在清理版 Rust release 后端上新鲜完成并通过验证，结构值正确，公共安全证据包已拆分并校验。历史性能比当前 fresh 大规模测量更快，差异原因未定位；因此不能称为历史 timing replication，也不应替换论文中的 Q5 数值。PR、主分支合并和新证据 release 以 GitHub 最终状态为准；没有运行链上实验。
+**READY_WITH_LIMITATIONS** — 四种规模均已在清理版 Rust release 后端上新鲜完成并通过验证，结构值正确，公共安全证据包已发布并校验。历史性能比当前 fresh 大规模测量更快，差异原因未定位；因此不能称为历史 timing replication，也不应替换论文中的 Q5 数值。PR #4 的主分支合并状态见 GitHub；没有运行链上实验。
