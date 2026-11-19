@@ -6,7 +6,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
-const { parseArgs, updateRun } = require("./reproduce");
+const { parseArgs, updateRun, addRustupBinToPath } = require("./reproduce");
 const { verifyRun } = require("./verify-results");
 const { readFreshRuns, markdown } = require("./summarize_runs");
 const { exportPublicRun } = require("./export_public_run");
@@ -17,6 +17,20 @@ test("reproduction CLI accepts the documented four-size syntax", () => {
   assert.deepEqual(parseArgs(["--sizes", "8,64,256,1024"]).sizes, [8, 64, 256, 1024]);
   assert.deepEqual(parseArgs(["--sizes", "8", "--build-artifacts"]).sizes, [8]);
   assert.throws(() => parseArgs(["--sizes", "8,16"]), /supported sizes are/);
+});
+
+test("Windows reproduction adds an installed per-user Rustup shim when PATH omits it", (t) => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "winner-only-rustup-home-"));
+  t.after(() => fs.rmSync(home, { recursive: true, force: true }));
+  const cargoBin = path.join(home, ".cargo", "bin");
+  fs.mkdirSync(cargoBin, { recursive: true });
+  fs.writeFileSync(path.join(cargoBin, "rustc.exe"), "test shim");
+  const env = { PATH: "C:\\Windows\\System32" };
+
+  assert.equal(addRustupBinToPath({ platform: "win32", home, env }), true);
+  assert.equal(env.PATH.split(path.delimiter)[0], cargoBin);
+  assert.equal(addRustupBinToPath({ platform: "win32", home, env }), false);
+  assert.equal(addRustupBinToPath({ platform: "linux", home, env }), false);
 });
 
 test("run enrichment records the verification-key hash and only marks verified stages after oracle pass", (t) => {

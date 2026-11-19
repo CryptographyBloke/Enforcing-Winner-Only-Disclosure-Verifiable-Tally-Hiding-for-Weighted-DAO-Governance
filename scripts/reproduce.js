@@ -65,6 +65,22 @@ function fileSha256(filePath) {
 
 function readJson(filePath) { return JSON.parse(fs.readFileSync(filePath, "utf8")); }
 
+function addRustupBinToPath({ platform = process.platform, home = os.homedir(), env = process.env } = {}) {
+  if (platform !== "win32") return false;
+  const cargoBin = path.join(home, ".cargo", "bin");
+  if (!fs.existsSync(path.join(cargoBin, "rustc.exe"))) return false;
+  const current = env.PATH || env.Path || "";
+  const normalizedCargoBin = path.resolve(cargoBin).toLowerCase();
+  const alreadyPresent = current.split(path.delimiter).some((entry) => {
+    if (!entry) return false;
+    try { return path.resolve(entry).toLowerCase() === normalizedCargoBin; }
+    catch (_) { return false; }
+  });
+  if (alreadyPresent) return false;
+  env.PATH = `${cargoBin}${current ? `${path.delimiter}${current}` : ""}`;
+  return true;
+}
+
 function requiredFiles() {
   return {
     wasm: path.join(repositoryRoot, "artifacts", "ballot", "build", "matrix", "vote_bit_full_8", "O1", "vote_bit_full_8_js", "vote_bit_full_8.wasm"),
@@ -105,6 +121,7 @@ function checkDiskSpace(sizes, outputRoot) {
 }
 
 function toolchainInfo() {
+  addRustupBinToPath();
   const node = process.version;
   const nodeMajor = Number(node.slice(1).split(".")[0]);
   if (nodeMajor < 20) fail(`Node.js 20 or newer is required; found ${node}`);
@@ -339,4 +356,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseArgs, freeBytesAt, checkDiskSpace, requiredFiles, updateRun };
+module.exports = { parseArgs, freeBytesAt, checkDiskSpace, requiredFiles, updateRun, addRustupBinToPath };
