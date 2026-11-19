@@ -1,31 +1,44 @@
-# Dependency and compiler outputs
+# Dependencies and compiler output
 node_modules/
+**/node_modules/
 target/
+**/target/
 dist/
 build/
 cache/
 coverage/
-artifacts/contracts/
-artifacts/build-info/
-implementation/arbitrum/artifacts/
-implementation/arbitrum/cache/
-circuits/node_modules/
+/artifacts/
+contracts/arbitrum/artifacts/
+contracts/arbitrum/cache/
 circuits/build/
-circuits/target/
 
-# Local credentials and wallet material
+# Fresh experiment output. Only the explanatory README is tracked.
+/runs/*
+!/runs/README.md
+
+# Credentials, keys, seeds, witnesses, and private oracle state
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 *.keystore
 *.mnemonic
 *.wallet
+*.seed
+*.secret
+*.wtns
+*.ptau
+*.zkey
+**/cleartext_oracle_inputs.json
+**/native_gate_records.jsonl
 
-# Local runtime and scratch data
+# Generated transcripts and local runtime scratch
 *.log
 *.tmp
 *.swp
+**/gate_transcript.jsonl
+gate_transcript.compact.bin
 .DS_Store
 .vscode/
 .idea/
@@ -35,27 +48,3 @@ local-chain/
 hardhat-deployments/
 rpc-state/
 benchmark-scratch/
-artifacts/local_five_trustee_*/
-artifacts/*_oracle/
-artifacts/run_*/
-
-# Generated witness/proving artifacts and bulky transcripts
-*.wtns
-*.r1cs
-*.sym
-*.ptau
-*.zkey
-*.wasm
-*.jsonl
-gate_transcript.compact.bin
-artifacts/public_sepolia_*/
-native_gate_records.jsonl
-cleartext_oracle_inputs.json
-
-# Secret or temporary setup outputs
-implementation/logs/
-*.seed
-*.secret
-
-# Generated run bundles may be emitted beneath the backend package too
-**/artifacts/local_five_trustee_*/

@@ -3,28 +3,74 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      sizes:
+        description: Local experiment sizes, comma-separated (8, 64, 256, 1024)
+        required: false
+        default: "8"
+        type: string
 
 jobs:
   fast-validation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: |
-            backend/js_protocol/package-lock.json
-            implementation/arbitrum/package-lock.json
+            protocol/package-lock.json
+            contracts/arbitrum/package-lock.json
             circuits/package-lock.json
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.98.1
-      - run: npm ci --prefix backend/js_protocol
-      - run: cargo build --release --locked --manifest-path backend/cgy_native/Cargo.toml
-      - run: cargo test --locked --manifest-path backend/cgy_native/Cargo.toml
-      - run: npm --prefix backend/js_protocol test
-      - run: npm --prefix backend/js_protocol run test:cross-language
-      - run: npm ci --prefix implementation/arbitrum
-      - run: npm --prefix implementation/arbitrum run compile
-      - run: npm --prefix implementation/arbitrum test -- --grep StrongN8Poll
+      - run: npm ci --prefix protocol
+      - run: cargo build --release --locked --manifest-path native/Cargo.toml
+      - run: cargo test --locked --manifest-path native/Cargo.toml
+      - run: npm --prefix protocol test
+      - run: node --test scripts/experiment_config.test.js
+      - run: node --test scripts/reproducibility.test.js
+      - run: bash -n scripts/reproduce.sh
+      - run: npm --prefix protocol run test:cross-language
+      - run: npm ci --prefix contracts/arbitrum
+      - run: npm --prefix contracts/arbitrum run compile
+      - run: npm --prefix contracts/arbitrum test
+      - run: npm --prefix contracts/arbitrum run test:board-binding
+      - run: node scripts/check-repo-paths.js
+
+  manual-local-n8-reproduction:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.98.1
+      - name: Install Circom 2.1.6
+        run: |
+          curl --fail --location --silent --show-error \
+            https://github.com/iden3/circom/releases/download/v2.1.6/circom-linux-amd64 \
+            --output "$RUNNER_TEMP/circom"
+          chmod +x "$RUNNER_TEMP/circom"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Run selected sizes with fresh setup and artifacts
+        env:
+          EXPERIMENT_SIZES: ${{ inputs.sizes || '8' }}
+        run: bash scripts/reproduce.sh "$EXPERIMENT_SIZES" --build-artifacts
+      - name: Export public-safe run artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-scale-public-runs-${{ github.run_id }}
+          path: runs/*/public/
+          if-no-files-found: error
+          retention-days: 30

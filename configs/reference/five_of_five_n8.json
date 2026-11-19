@@ -10,6 +10,6 @@
   "referenceThresholdTau": 500,
   "chain": "Arbitrum Sepolia",
   "chainId": 421614,
-  "localScaleBallotCounts": [8, 64, 1024],
+  "localScaleBallotCounts": [8, 64, 256, 1024],
   "localScaleTauRule": "floor(255*n/4)"
 }

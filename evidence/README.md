@@ -47,7 +47,7 @@ So the retained run bundles verify against `frozen_source_q5/`, not against the 
 
 ## Checks that need no key
 
-Run these from the **repository root**. They need Python 3 and Node.js 20 or later. Step 3 also needs the `ethers` package, which `npm ci --prefix backend/js_protocol` installs.
+Run these from the **repository root**. They need Python 3 and Node.js 20 or later. Step 3 also needs the `ethers` package, which `npm ci --prefix protocol` installs.
 
 ### Step 1. Check a frozen source file against its recorded hash
 
@@ -73,11 +73,11 @@ This reads the 11 transactions and the outcome-claim event from `https://sepolia
 ### Step 3. Recompute the backend sealed-board hash
 
 ```bash
-npm ci --prefix backend/js_protocol
-NODE_PATH=backend/js_protocol/node_modules node evidence/tools/verify_board_hash.js
+npm ci --prefix protocol
+NODE_PATH=protocol/node_modules node evidence/tools/verify_board_hash.js
 ```
 
-On Windows PowerShell set the variable first: `$env:NODE_PATH = "backend/js_protocol/node_modules"`. Expected last line: `MATCH` (recomputed `0x64876090cba05fdd26b631ac3a23078d11e5f42cc516c854478c52c05610a172`, equal to the recorded value).
+On Windows PowerShell set the variable first: `$env:NODE_PATH = "protocol/node_modules"`. Expected last line: `MATCH` (recomputed `0x64876090cba05fdd26b631ac3a23078d11e5f42cc516c854478c52c05610a172`, equal to the recorded value).
 
 ### Step 4. Recompute the transcript hash H(T) from the retained transcript
 
