@@ -78,6 +78,8 @@ NETWORK-02 将已有受托方签名消息通过五个 TCP 客户端进程发送�
 
 每个 n=8 网络档位运行三次并通过验证；n=64 每档一次，n=64、100 ms 档尚未测量。字节数统计 TCP 应用帧并包含 board 广播，不包含网络包头。客户端重放的是集中生成的签名记录，因此这些数据描述认证 transcript 的 TCP 传输与重放。详见[完整报告](reports/NETWORK-02.md)和[论文插入片段](paper/network_results.tex)。
 
+下载[NETWORK-02 公共证据包](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/network-02-tcp-transport-v1)。包内索引记录了每个导出文件的 SHA-256。
+
 ## 安全范围
 
 论文证明了即使受托方恶意也不会接受错误结果，并证明少于五个解密份额的静态主动攻击者集合无法获知 tally；winner-only disclosure 推论针对实际封存的 board。实现中的五个受托方角色位于同一进程，使用测试专用 setup；这不是分布式密钥生成仪式，也不是生产部署。详见[安全模型](docs/security-model.md)。

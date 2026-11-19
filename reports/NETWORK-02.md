@@ -92,7 +92,7 @@ Each directory contains `network_manifest.json`, a persistent `transport/canonic
 
 Every selected run preserves the source gate-journal and final-release hashes. The network manifests record the code commit at run time and SHA-256 values for the board, client, coordinator, and canonical board source files. The n=8 source-data commit was `2d76ba053ed8f21d23996180f1a6baf168edbd0c`; the fresh n=64 source run was generated from this branch's `3b4c7472bc2721b66099e36b668f80159a588a77` base. The later branch commits package the same measured transport implementation and this report.
 
-The safe export `runs/network-02_public_export_20261119150701_80cab9` contains the selected 11 verified runs. Its index covers 385 files; all indexed SHA-256 values verified, and the archive scan found no private/oracle directories, shares, witnesses, environment files, or workload inputs. The ZIP is 402,637,754 bytes with SHA-256 `6693266817aa9512be26fd2afa0bcaafb59cd7fcedc2384a02bc4fedd327f7de`. [`scripts/summarize-network-runs.js`](../scripts/summarize-network-runs.js) writes the fresh-run CSV under ignored `runs/`. The source n=8 and n=64 outputs remain separate from historical Q5 evidence.
+The safe export `runs/network-02_public_export_20261119150701_80cab9` contains the selected 11 verified runs. Its index covers 385 files; all indexed SHA-256 values verified, and the archive scan found no private/oracle directories, shares, witnesses, environment files, or workload inputs. The ZIP is 402,637,754 bytes with SHA-256 `6693266817aa9512be26fd2afa0bcaafb59cd7fcedc2384a02bc4fedd327f7de`; it is published in the [NETWORK-02 evidence release](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/network-02-tcp-transport-v1). [`scripts/summarize-network-runs.js`](../scripts/summarize-network-runs.js) writes the fresh-run CSV under ignored `runs/`. The source n=8 and n=64 outputs remain separate from historical Q5 evidence.
 
 ## 7. Discovered limitations
 
@@ -115,9 +115,9 @@ The manuscript can include these numbers only as an authenticated TCP transcript
 
 ## 10. GitHub branch and publication
 
-The verified main baseline remains `2d76ba053ed8f21d23996180f1a6baf168edbd0c`. Work is on `network-02-tcp-distributed-experiment`. GitHub CLI is authenticated. The existing `blocksys2027-evidence-v1` release remains unchanged; the new public-safe transport archive will use its own release tag.
+The verified main baseline remains `2d76ba053ed8f21d23996180f1a6baf168edbd0c`. Work is on `network-02-tcp-distributed-experiment`. The implementation commit is `34b9a7d31c7c5b0ec5255b3e266b2b5e41c1cc9e`, pushed to GitHub. The existing `blocksys2027-evidence-v1` release remains unchanged. The public-safe archive is published as [`network-02-tcp-transport-v1`](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/network-02-tcp-transport-v1).
 
-**Commit:** To be added after commit and push.
+**Implementation commit:** `34b9a7d31c7c5b0ec5255b3e266b2b5e41c1cc9e`
 
 **Branch:** `https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/tree/network-02-tcp-distributed-experiment`
 
@@ -125,7 +125,7 @@ The verified main baseline remains `2d76ba053ed8f21d23996180f1a6baf168edbd0c`. W
 
 ## 11. Remaining author-side submission actions
 
-1. Review the local public export and choose the n=8 profiles to publish as a separate future evidence release.
+1. Review the published NETWORK-02 evidence release and decide whether to cite its transport results.
 2. Decide whether the transport-only table fits Section 8; use the insertion note to replace a modeled example and keep the paper at 14 pages.
 3. Apply the fragment to the editable manuscript, compile, visually inspect all pages, and confirm the final page count.
 4. Treat a five-process cryptographic split and n=64 100 ms profile as separate follow-up experiments before describing distributed trustee execution.

@@ -78,6 +78,8 @@ NETWORK-02 replayed the existing signed trustee messages through five TCP client
 
 Each n=8 profile has three successful runs; each n=64 profile has one. The n=64, 100 ms profile remains unmeasured. Byte totals count TCP application framing, including board fan-out. They exclude packet headers. The trustee clients replayed centrally generated signed records, so these figures describe authenticated transcript transport and replay. See [the full report](reports/NETWORK-02.md) and [the insertion-ready manuscript fragment](paper/network_results.tex).
 
+Download the [public NETWORK-02 evidence bundle](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/network-02-tcp-transport-v1). Its index contains SHA-256 hashes for every exported file.
+
 ## Security scope
 
 The paper proves accepted-result correctness even with malicious trustees, restricted-I/O SUC security against a static active coalition smaller than the five-share decryption threshold, and a winner-only disclosure corollary for the actual sealed board. The implementation's five trustee roles are co-located and use test-only setup; this is not distributed key generation or a production deployment. See [docs/security-model.md](docs/security-model.md).
