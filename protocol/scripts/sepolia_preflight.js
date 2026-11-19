@@ -1,6 +1,7 @@
 "use strict";
 
 const { ethers } = require("ethers");
+const { redactSensitiveErrorText } = require("../src/safe_error_text");
 
 async function main() {
   if (!process.env.ARBITRUM_SEPOLIA_RPC_URL || !process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY) throw new Error("public RPC/deployer configuration is missing");
@@ -15,4 +16,4 @@ async function main() {
   process.stdout.write(`STATUS=PASS\nNETWORK=ARBITRUM_SEPOLIA\nCHAIN_ID=${network.chainId}\nLATEST_BLOCK=${latest}\nDEPLOYER_ADDRESS=${wallet.address}\nDEPLOYER_BALANCE_WEI=${balance}\nDEPLOYER_BALANCE_ETH=${ethers.formatEther(balance)}\nRPC_RESPONSIVE=YES\nRPC_PROBE_MS=${probeMs.toFixed(4)}\nPRIVATE_CREDENTIALS_RECORDED=NO\nCONTRACT_SEMANTICS_CHANGED=NO\nFINAL_REFERENCE_THRESHOLD=5_OF_5\n`);
 }
 
-main().catch((error) => { process.stderr.write(`${error.stack || error.message}\n`); process.exitCode = 1; });
+main().catch((error) => { process.stderr.write(`${redactSensitiveErrorText(error.stack || error.message)}\n`); process.exitCode = 1; });

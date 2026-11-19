@@ -68,6 +68,40 @@ $env:ARBITRUM_SEPOLIA_PRIVATE_KEY = '<funded testnet key>'
 node protocol/scripts/sepolia_preflight.js
 ```
 
-The preflight queries chain ID, block height, deployer address, and balance. It submits no transaction and does not write credentials. The current implementation does not log the private key or RPC URL. After reviewing the preflight, the author may choose to execute the existing `run:sepolia` pipeline with a new poll ID and fresh paths. That pipeline deploys and submits transactions; do not run it as part of routine local reproduction. Keep its oracle directory private and outside the public run directory.
+The preflight queries chain ID, block height, deployer address, and balance. It submits no transaction. Its output excludes the RPC URL and private key; error output redacts both values. The ballot-generation child process does not receive either credential.
+
+After reviewing the preflight, the author may choose to run a new testnet experiment. The poll ID must be a fresh unused decimal value, and the directories below are unique for each invocation. The deployment command submits transactions and spends testnet funds. Do not run it as part of routine local reproduction.
+
+```powershell
+# Replace both prompts with your private endpoint and funded testnet key.
+$env:ARBITRUM_SEPOLIA_RPC_URL = '<read-only Arbitrum Sepolia RPC endpoint>'
+$env:ARBITRUM_SEPOLIA_PRIVATE_KEY = '<funded testnet deployer key>'
+npm ci --prefix protocol
+node protocol/scripts/sepolia_preflight.js
+```
+
+Stop after the preflight and review the chain ID and balance. Only if you choose to continue, keep the same PowerShell session and run:
+
+```powershell
+$repoRoot = (Get-Location).Path
+$env:CGY_SEPOLIA_POLL_ID = '<fresh unused decimal poll ID>'
+$env:HARDHAT_NETWORK = 'arbitrumSepolia'
+$env:CGY_NATIVE_BACKEND = '1'
+$env:CGY_BALLOT_ARTIFACT_ROOT = $repoRoot
+$runId = 'sepolia_' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmss') + '_' + [guid]::NewGuid().ToString('N')
+$env:CGY_N8_RUN_DIRECTORY = Join-Path $repoRoot "runs\$runId\public"
+$env:CGY_N8_ORACLE_DIRECTORY = Join-Path $repoRoot "runs\$runId-private-oracle"
+
+npm ci --prefix circuits
+npm ci --prefix contracts/arbitrum
+cargo build --release --locked --manifest-path native/Cargo.toml
+npm --prefix protocol run build:ballot
+npm --prefix contracts/arbitrum run compile
+node protocol/scripts/run_sepolia_pipeline.js
+node protocol/scripts/replay_sepolia_public.js
+node protocol/scripts/compare_replay_with_oracle.js
+```
+
+`HARDHAT_NETWORK=arbitrumSepolia` is required for the deployment to target the testnet. The pipeline writes public verification files under `runs/<run-id>/public` and cleartext oracle inputs to a sibling private directory. The oracle comparison refuses to open those inputs until independent replay passes; it then records only the comparison result and timings in the public summary and manifest. Never print or commit the two credential variables. The build creates local test-only proving artifacts and must not be treated as a trusted setup.
 
 The archived Sepolia reference used chain ID `421614`, poll ID `910004`, eight accepted ballots, 134 gates, and `tau=500`. It is testnet evidence, not a production Arbitrum DAO deployment. The public archive and its limitations are described in [provenance.md](provenance.md) and [`evidence/README.md`](../evidence/README.md).

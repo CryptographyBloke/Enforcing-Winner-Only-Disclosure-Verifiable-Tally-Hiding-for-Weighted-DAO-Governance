@@ -6,6 +6,7 @@ const fs = require("fs");
 const { createRequire } = require("module");
 const path = require("path");
 const { requireCondition } = require("../src/errors");
+const { redactSensitiveErrorText } = require("../src/safe_error_text");
 const { PROTOCOL_VERSION } = require("../src/group_oracle");
 const { provisionFreshTestOnly } = require("../src/threshold_setup");
 const { publicSetupToJson } = require("../src/codec");
@@ -122,19 +123,22 @@ async function main() {
 
   const artifacts = artifactPaths();
   const ballotProofWallStarted = monotonicNow();
+  const ballotEnvironment = {
+    ...process.env,
+    CGY_N8_PUBLIC_DIRECTORY: runDirectory,
+    CGY_N8_ORACLE_DIRECTORY: oracleDirectory,
+    CGY_N8_COMMITTEE_KEY: JSON.stringify({ x: setup.committeeKey.x.toString(10), y: setup.committeeKey.y.toString(10) }),
+    CGY_N8_POLL_ID: pollId,
+    CGY_N8_TAU: String(tau),
+    CGY_BALLOT_WASM: artifacts.wasmPath,
+    CGY_BALLOT_ZKEY: artifacts.zkeyPath,
+    CGY_BALLOT_VKEY: artifacts.vkeyPath,
+  };
+  delete ballotEnvironment.ARBITRUM_SEPOLIA_RPC_URL;
+  delete ballotEnvironment.ARBITRUM_SEPOLIA_PRIVATE_KEY;
   const child = childProcess.spawnSync(process.execPath, [path.join(__dirname, "generate_n8_ballots_child.js")], {
     encoding: "utf8",
-    env: {
-      ...process.env,
-      CGY_N8_PUBLIC_DIRECTORY: runDirectory,
-      CGY_N8_ORACLE_DIRECTORY: oracleDirectory,
-      CGY_N8_COMMITTEE_KEY: JSON.stringify({ x: setup.committeeKey.x.toString(10), y: setup.committeeKey.y.toString(10) }),
-      CGY_N8_POLL_ID: pollId,
-      CGY_N8_TAU: String(tau),
-      CGY_BALLOT_WASM: artifacts.wasmPath,
-      CGY_BALLOT_ZKEY: artifacts.zkeyPath,
-      CGY_BALLOT_VKEY: artifacts.vkeyPath,
-    },
+    env: ballotEnvironment,
     maxBuffer: 16 * 1024 * 1024,
   });
   writeNew(path.join(runDirectory, "ballot_generation.log"), `${child.stdout || ""}${child.stderr || ""}`);
@@ -340,6 +344,12 @@ async function main() {
   const manifest = {
     schema: "winner-only-disclosure/sepolia-manifest/v1",
     profile: "winner-only-disclosure/five-of-five/v1",
+    execution: "arbitrum-sepolia",
+    count: acceptedBallots.length,
+    gates: gateIndex,
+    depth: 72,
+    maxReadyWidth: 4,
+    canonicalTranscriptBytes: transcriptBytes,
     previousReferenceThreshold: "3_OF_5",
     finalReferenceThreshold: "5_OF_5",
     protocolVersion: PROTOCOL_VERSION,
@@ -399,7 +409,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error.code || "E_CGY_N8"}: ${error.stack || error.message}\n`);
+  process.stderr.write(`${error.code || "E_CGY_N8"}: ${redactSensitiveErrorText(error.stack || error.message)}\n`);
   process.exitCode = 1;
 });
 
