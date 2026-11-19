@@ -1,6 +1,6 @@
 # Security model and limits
 
-This summary follows the public paper at [IACR ePrint 2026/1773](https://eprint.iacr.org/2026/1773) and the Q5 parameter authority retained in [`evidence/docs/CGY_Q5_PARAMETER_AUTHORITY.md`](../evidence/docs/CGY_Q5_PARAMETER_AUTHORITY.md). It does not extend the paper's claims.
+This summary follows the public paper at [IACR ePrint 2026/1773](https://eprint.iacr.org/2026/1773) and the Q5 parameter authority preserved in the [evidence-v1 archive](../evidence/README.md). It does not extend the paper's claims.
 
 ## The two theorems and the corollary
 
@@ -12,7 +12,7 @@ The paper's result is about the defined protocol and its cryptographic model. Th
 
 ## Main assumptions
 
-The Q5 argument relies on the frozen BabyJub/Base8 configuration, fixed-base DDH, a programmable group-valued oracle, ordinary auxiliary-input Groth16 computational knowledge soundness together with the paper's finite-board ballot-admission lemma, and the approved canonical broadcast model. The exact parameter and lemma mapping is retained in the [Q5 paper handoff](../evidence/docs/CGY_Q5_PAPER_HANDOFF.md).
+The Q5 argument relies on the frozen BabyJub/Base8 configuration, fixed-base DDH, a programmable group-valued oracle, ordinary auxiliary-input Groth16 computational knowledge soundness together with the paper's finite-board ballot-admission lemma, and the approved canonical broadcast model. The exact parameter and lemma mapping is preserved in the Q5 paper handoff within the [evidence-v1 archive](../evidence/README.md).
 
 ## Explicit boundaries
 

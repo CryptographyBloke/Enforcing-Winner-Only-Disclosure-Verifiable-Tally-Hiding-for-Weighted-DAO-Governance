@@ -19,7 +19,7 @@ The GitHub Actions `workflow_dispatch` reproduction job defaults to `n=8`. Its `
 
 ## Historical Q5 timings
 
-The following values are read from the retained `evidence/data/performance_local.csv`. The source, machine, and run IDs are historical; timings are not promises for a new host.
+The following phase timings are from the manifests behind the rounded historical Q5 values in the PDF. The manifests and source records are preserved in the [evidence-v1 release](../evidence/README.md), not duplicated in the main source tree. The source, machine, and run IDs are historical; timings are not promises for a new host.
 
 | n | proving (s) | admission (s) | backend (s) | release (s) | producer replay (s) | total (s) | JSONL transcript |
 |---:|---:|---:|---:|---:|---:|---:|---:|
@@ -28,22 +28,13 @@ The following values are read from the retained `evidence/data/performance_local
 | 256 | 368.449 | 5.216 | 47.129 | 8.403 | 32.910 | 462.134 | 886 MB |
 | 1,024 | 1,414.928 | 19.164 | 156.715 | 4.568 | 114.540 | 1,709.946 | 3.55 GB |
 
-The original measurement host was Windows 11 with an Intel Core i7-14650HX, Node.js 24.15, and Rust 1.98.1. Fresh results belong under `runs/` and are summarized with `node scripts/summarize_runs.js`. Runtime comparisons should include host and toolchain details.
+The original measurement host was Windows 11 with an Intel Core i7-14650HX, Node.js 24.15, and Rust 1.98.1. The total column uses the manifest `totalSeconds` field, which includes a small setup interval not shown as a separate Table 1 column. Fresh results belong under `runs/` and are summarized with `node scripts/summarize_runs.js`. Runtime comparisons should include host and toolchain details.
 
-## Fresh cleaned-workspace runs (2026-11-19)
+## Fresh local reproduction
 
-These four runs were generated from cleaned source commit `c60db5d7cb006c07db68743751a100e5c8e4260e` on Windows 11 (build 10.0.26200), Intel Core i7-14650HX (16 physical / 24 logical cores), Node.js 24.15.0, Rust 1.98.1, and Circom 2.1.6. One fresh test-only Groth16 setup took about 14 minutes and is excluded from the per-size pipeline totals. Each run passed ballot proof verification, local admission, exact accepted-board binding, five-of-five final release, producer replay, independent public replay, result checks, and isolated oracle comparison.
+The PowerShell and Bash entry points generate new run IDs, verify each phase, and summarize only the artifacts produced by that invocation. Their measurements are new observations for the maintained checkout; they do not regenerate the historical values in the submission PDF.
 
-| n | gates | depth | proving (s) | admission (s) | Rust backend (s) | release (s) | producer replay (s) | independent replay (s) | complete per-size pipeline (s) |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 8 | 134 | 72 | 17.947 | 0.620 | 5.302 | 8.031 | 1.282 | 2.900 | 38.645 |
-| 64 | 1,086 | 147 | 150.325 | 2.566 | 24.397 | 4.583 | 13.050 | 14.982 | 226.338 |
-| 256 | 4,350 | 207 | 592.009 | 9.414 | 83.640 | 8.873 | 59.714 | 70.161 | 886.193 |
-| 1,024 | 17,406 | 275 | 2,363.563 | 34.649 | 322.893 | 6.960 | 246.083 | 281.850 | 3,507.043 |
-
-The table is parsed from the four new run artifacts; it is not filled from the historical CSV. The new per-size total includes the current pipeline's producer replay, compact transcript encoding, independent public replay, result checks, and oracle comparison. Historical totals have a different scope, so compare phase timings rather than totals. The four manifest files are in the public evidence release linked from [`provenance.md`](provenance.md); machine-readable data are also in `runs/public_exports/fresh_results.csv` in the local workspace.
-
-The fresh gate counts and depths match all four expected structures. Runtime is materially slower than the historical Q5 measurements at `n=256` and `n=1,024`, including for the Rust backend. The cause has not been isolated; these valid fresh observations do not establish a performance reproduction and must not replace the historical paper results. A controlled repeat/profile is needed before making a timing claim. For `n=1,024`, the canonical JSONL transcript is 3,539,239,193 bytes and compact encoding is 956,381,856 bytes.
+A separate cleaned-workspace validation archive exists as evidence v2. It is an engineering record outside the submission results. The paper tables and their source manifests remain in evidence v1.
 
 ## Public-safe results
 
