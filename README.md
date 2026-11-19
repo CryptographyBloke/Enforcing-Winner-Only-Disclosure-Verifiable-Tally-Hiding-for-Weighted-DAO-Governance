@@ -53,11 +53,24 @@ After setup, run additional sizes with:
 
 Bash entry point: `bash scripts/reproduce.sh 8,64,256,1024`. Detailed setup, outputs, resource estimates, and public-chain instructions are in [docs/quickstart.md](docs/quickstart.md) and [docs/experiments.md](docs/experiments.md).
 
+## Fresh local runs
+
+The cleaned implementation completed fresh local runs at all four sizes on 2026-11-19. Every run passed ballot verification, exact board binding, five-of-five release, independent public replay, and isolated oracle comparison.
+
+| n | gates | depth | proving | Rust backend | complete pipeline | verification |
+|---:|---:|---:|---:|---:|---:|:---:|
+| 8 | 134 | 72 | 17.947 s | 5.302 s | 38.645 s | PASS |
+| 64 | 1,086 | 147 | 150.325 s | 24.397 s | 226.338 s | PASS |
+| 256 | 4,350 | 207 | 592.009 s | 83.640 s | 886.193 s | PASS |
+| 1,024 | 17,406 | 275 | 2,363.563 s | 322.893 s | 3,507.043 s | PASS |
+
+These are new cleaned-workspace measurements, not historical Q5 results. The gate counts and depths match; the larger runs are materially slower than the historical measurements and the cause has not been isolated. See the [fresh evidence release](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/blocksys2027-evidence-v2-cleaned-local-2026-11) and [full phase table](docs/experiments.md#fresh-cleaned-workspace-runs-2026-11-19). The paper's historical timings below remain the authoritative Q5 measurements.
+
 ## Historical Q5 measurements
 
 These are published measurements from the frozen Q5 source and original workstation. They are not runs of the cleaned checkout. Timings vary by machine.
 
-| n | gates | depth | ballot proving | backend | independent replay | total |
+| n | gates | depth | ballot proving | backend | producer replay | total |
 |---:|---:|---:|---:|---:|---:|---:|
 | 8 | 134 | 72 | 10.044 s | 4.055 s | 0.919 s | 22.123 s |
 | 64 | 1,086 | 147 | 146.507 s | 15.981 s | 11.684 s | 184.408 s |
