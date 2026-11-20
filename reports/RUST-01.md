@@ -140,8 +140,9 @@ Rust TCP board 是单一 trusted sequencer。它用 Ed25519 签名认证 trustee
 | `rustfmt --check`（新 binaries/crate files）及 `git diff --check` | 0 |
 | `runner.exe test-dealer ...` + public/private 文件检查 | 0；5 私有配置、public secret scan 和 gitignore 检查 PASS |
 | `coordinator.exe --plan <startup-plan>` | 0；五个 trustee 启停通过，`count=0`，未执行 phase |
+| GitHub Actions `CI` run [44675201363](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/actions/runs/44675201363) | success；Ubuntu 24.04 `fast-validation` 全部步骤通过 |
 
-测试主机为 Windows 11 x64，Rust/Cargo 1.98.1、Node v24.15.0。工作流面向 Ubuntu 24.04，但本次没有执行 GitHub Actions/Linux 构建。`npm ci --prefix contracts/arbitrum` 安装成功；npm audit 报告 56 项依赖告警（20 low、15 moderate、20 high、1 critical）。为保持 lockfile 与研究基线，本次未升级依赖。
+本机测试主机为 Windows 11 x64，Rust/Cargo 1.98.1、Node v24.15.0。GitHub Actions run `44675201363` 在 Ubuntu 24.04 上通过完整 `fast-validation`。`npm ci --prefix contracts/arbitrum` 安装成功；npm audit 报告 56 项依赖告警（20 low、15 moderate、20 high、1 critical）。为保持 lockfile 与研究基线，本次未升级依赖。
 
 ## 12. 原始结果路径、哈希与来源
 
