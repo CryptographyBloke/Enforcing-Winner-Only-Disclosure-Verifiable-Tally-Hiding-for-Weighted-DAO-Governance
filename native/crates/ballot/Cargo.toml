@@ -6,4 +6,12 @@ publish = false
 
 [dependencies]
 cgy-crypto = { path = "../crypto" }
+ark-bn254 = "0.6.0"
+ark-circom = { version = "0.6.0", default-features = false }
+ark-ff = "0.6.0"
+ark-groth16 = "0.6.0"
+ark-snark = "0.6.0"
+num-bigint = "0.4.8"
+rand = "0.8.8"
 serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.151", features = ["preserve_order"] }

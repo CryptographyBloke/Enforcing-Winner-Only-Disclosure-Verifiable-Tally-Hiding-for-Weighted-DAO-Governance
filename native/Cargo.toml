@@ -17,6 +17,8 @@ members = [
 ]
 
 [dependencies]
+ark-bn254 = "0.6.0"
+ark-groth16 = "0.6.0"
 cgy-crypto = { path = "crates/crypto" }
 cgy-protocol = { path = "crates/protocol" }
 cgy-network = { path = "crates/network" }

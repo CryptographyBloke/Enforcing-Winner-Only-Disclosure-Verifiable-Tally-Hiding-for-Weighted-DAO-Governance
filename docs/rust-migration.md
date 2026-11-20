@@ -9,7 +9,7 @@ Branch: `refactor/rust-native-distributed`. The Rust workspace lives in `native/
 | `cgy-crypto` | Canonical BabyJub/Base8 point validation, serialization, and group arithmetic. |
 | `cgy-protocol` | Existing CGY gate proofs, arithmetic DAG verifier, one-share trustee worker, and canonical public contribution encoding. |
 | `cgy-network` | Ed25519 slot authentication, ordered board state, TCP service, fsynced event log, proof-checked recovery, and replay. |
-| `cgy-ballot` | Structural decoding of the unchanged 37 public ballot signals and validation of ciphertext points. |
+| `cgy-ballot` | Circom WASM witness evaluation, original SnarkJS `.zkey` loading, Rust Groth16 proving and verification, SnarkJS JSON proof/VK decoding, and validation of all 37 public ballot signals. |
 | `cgy-chain` | Read-only Ethereum JSON-RPC calls for chain ID, receipts, and logs. The API has no transaction submission method. |
 | `cgy-evidence` | SHA-256 artifact manifests and a public-export path filter. |
 
@@ -25,6 +25,15 @@ cargo build --workspace --release --locked --manifest-path native/Cargo.toml
 ```
 
 The binaries are written to `native/target/release/`.
+
+Rust ballot proving uses the existing circuit artifacts and does not need Node.js at runtime:
+
+```powershell
+native\target\release\ballot.exe prove --config runs-private\ballot-prove-config.json
+native\target\release\ballot.exe verify --bundle runs\rust-ballot\public\ballots.json --vkey path\to\matching\verification_key.json
+```
+
+The private JSON config supplies paths to the matching Circom WASM/R1CS, original `.zkey` and verification key, fresh poll ID, vote/weight test inputs, committee public key, and a new public output path. The command refuses to overwrite an existing output. Keep the config and any witness material under `runs-private/`; the public bundle contains proofs, signals, and phase timings. The compiled circuit and proving-key files are large, setup-specific inputs and are not committed. A test-only setup key does not match the fixed verifier contract. Use a key whose verification key matches the deployed Solidity verifier.
 
 ```powershell
 native\target\release\runner.exe local-gate path\to\gate-request.json
@@ -45,7 +54,7 @@ The Rust TCP board stores a Rust-specific JSONL wrapper around the original publ
 
 The full Rust migration is not complete:
 
-- Circom/snarkjs witness generation, Groth16 proving and ballot-proof verification still use the JavaScript toolchain. `cgy-ballot` only parses the already verified public-signal vector; it does not establish proof validity or verify EVM compatibility.
+- Rust now handles witness evaluation through the Circom WASM interpreter, Groth16 proving from the original SnarkJS `.zkey`, and Groth16 verification. A fresh Rust-generated n=8 ballot bundle was accepted by the unchanged Solidity verifier. `ballot verify` also accepted the eight frozen SnarkJS fixtures against the original verification key. The public experiment runner, ballot admission, weighted DAG, full distributed protocol, chain-to-board binding, and public replay remain outside this Rust ballot CLI.
 - The existing ballot admission path, arithmetic DAG construction, ready-gate scheduler, local-scale runner, and oracle comparison remain JavaScript.
 - The Rust chain crate provides read-only JSON-RPC methods, not Solidity ABI decoding, deployment, transaction signing, or full accepted-board reconstruction.
 - The Rust board/coordinator/trustee binaries compile and the board has TCP/persistence smoke coverage. A complete n=8 election using only these Rust binaries has not passed yet. No n=64 Rust-native run has been made.

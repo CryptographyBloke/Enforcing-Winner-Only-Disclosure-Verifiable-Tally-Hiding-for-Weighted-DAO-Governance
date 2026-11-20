@@ -89,7 +89,7 @@ cargo test --workspace --locked --manifest-path native/Cargo.toml
 cargo build --workspace --release --locked --manifest-path native/Cargo.toml
 ```
 
-这是实验性迁移。Rust 已具备 trustee 本地 CGY worker 和会验证证明的 TCP board；完整选票流程仍使用 JavaScript Circom/snarkjs 生成及接纳证明，并沿用现有 DAG scheduler。Rust ballot crate 目前只校验原有的 37 个公开信号布局，不生成或验证 Groth16 证明。当前 CLI 与迁移边界见 [Rust 迁移说明](docs/rust-migration.md)。
+这是实验性迁移。Rust `ballot` 程序现在使用 `ark-circom` 执行原 Circom WASM witness，读取原 SnarkJS `.zkey`，并在 Rust 中生成 Groth16 证明、检查全部 37 个公开信号。一次 release 模式 n=8 新鲜证明运行中，8 张 ballot 均通过未修改的 Solidity verifier。这是选票证明层的兼容性结果；admission、加权 DAG、完整分布式 gate、replay 和 oracle 比较仍在现有 JavaScript 流程中，Rust-only 端到端投票尚未完成。Rust prover 需要匹配的 WASM、R1CS、`.zkey` 和 verification key；这些 setup 产物没有提交到仓库。命令和迁移边界见 [Rust 迁移说明](docs/rust-migration.md)。
 
 ## 安全范围
 

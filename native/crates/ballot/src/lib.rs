@@ -1,8 +1,10 @@
-//! Decoder and structural validator for the frozen Circom ballot public inputs.
-//! Groth16 proof verification remains an explicit upstream admission step.
+//! Rust-native witness generation, Groth16 proving, verification and ballot parsing.
 
 use cgy_crypto::{FIELD_PRIME_DECIMAL, ValidatedPoint};
 use serde::Serialize;
+
+pub mod poseidon;
+pub mod proving;
 
 pub const PUBLIC_SIGNAL_COUNT: usize = 37;
 pub const ENCRYPTED_WEIGHT_BITS: usize = 8;

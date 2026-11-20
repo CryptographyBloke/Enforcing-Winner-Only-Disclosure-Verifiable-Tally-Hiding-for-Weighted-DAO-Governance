@@ -89,7 +89,7 @@ cargo test --workspace --locked --manifest-path native/Cargo.toml
 cargo build --workspace --release --locked --manifest-path native/Cargo.toml
 ```
 
-This is an experimental migration. Rust now has trustee-local CGY workers and a proof-checking TCP board, while the complete ballot workflow still uses the JavaScript Circom/snarkjs proving and admission path and its DAG scheduler. The Rust ballot crate currently validates the existing 37-signal layout; it does not generate or verify Groth16 proofs. See the [Rust migration notes](docs/rust-migration.md) for the current CLI and exact migration boundary.
+This is an experimental migration. The Rust `ballot` binary now uses `ark-circom` to evaluate the unchanged Circom WASM witness, reads the original SnarkJS `.zkey`, creates Groth16 proofs in Rust, and checks all 37 public signals. A fresh release-mode n=8 proof run was accepted by the unchanged Solidity verifier for all eight ballots. This is ballot-level compatibility evidence; admission, the weighted DAG runner, full distributed gate execution, replay, and oracle comparison still use the existing JavaScript path. Rust-only end-to-end voting is not complete. The prover needs a matched WASM, R1CS, `.zkey`, and verification key; these setup artifacts are not committed. See the [Rust migration notes](docs/rust-migration.md) for commands and the exact boundary.
 
 ## Security scope
 
