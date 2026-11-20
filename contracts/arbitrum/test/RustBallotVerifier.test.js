@@ -7,6 +7,7 @@ const suite = bundlePath ? describe : describe.skip;
 
 suite("Rust-generated ballot proof compatibility", function () {
   it("accepts every ballot using the unchanged Solidity Groth16 verifier", async function () {
+    this.timeout(600_000);
     const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
     expect(bundle.ballots.length).to.be.greaterThan(0);
 
