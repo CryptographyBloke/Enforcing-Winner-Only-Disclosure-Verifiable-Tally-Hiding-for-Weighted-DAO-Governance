@@ -80,6 +80,17 @@ Each n=8 profile has three successful runs; each n=64 profile has one. The n=64,
 
 Download the [public NETWORK-02 evidence bundle](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/network-02-tcp-transport-v1). Its index contains SHA-256 hashes for every exported file.
 
+## Rust-native migration branch
+
+The [`refactor/rust-native-distributed` branch](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/tree/refactor/rust-native-distributed) starts a Rust workspace for CGY cryptography, authenticated TCP board execution, trustee workers, public replay, ballot-signal decoding, read-only chain access, and evidence hashing. Build it on Windows with:
+
+```powershell
+cargo test --workspace --locked --manifest-path native/Cargo.toml
+cargo build --workspace --release --locked --manifest-path native/Cargo.toml
+```
+
+This is an experimental migration. Rust now has trustee-local CGY workers and a proof-checking TCP board, while the complete ballot workflow still uses the JavaScript Circom/snarkjs proving and admission path and its DAG scheduler. The Rust ballot crate currently validates the existing 37-signal layout; it does not generate or verify Groth16 proofs. See the [Rust migration notes](docs/rust-migration.md) for the current CLI and exact migration boundary.
+
 ## Security scope
 
 The paper proves accepted-result correctness even with malicious trustees, restricted-I/O SUC security against a static active coalition smaller than the five-share decryption threshold, and a winner-only disclosure corollary for the actual sealed board. The implementation's five trustee roles are co-located and use test-only setup; this is not distributed key generation or a production deployment. See [docs/security-model.md](docs/security-model.md).
@@ -93,7 +104,7 @@ The archived `n=8` testnet experiment used chain ID `421614`, accepted eight bal
 | Path | Contents |
 |---|---|
 | [`protocol/`](protocol/package.json) | JavaScript protocol, ballot orchestration, public replay, and tests |
-| [`native/`](native/Cargo.toml) | Rust CGY gate engine, scheduler, and transcript tools |
+| [`native/`](native/Cargo.toml) | Rust workspace: CGY crypto/protocol, trustee, board, coordinator, verifier, and runner binaries |
 | [`circuits/`](circuits/package.json) | Circom ballot relation and pinned circuit dependency |
 | [`contracts/arbitrum/`](contracts/arbitrum/package.json) | Arbitrum ballot contract, board binding, fixtures, and Hardhat tests |
 | [`configs/reference/`](configs/reference/five_of_five_n8.json) | Five-of-five parameters and local sizes |

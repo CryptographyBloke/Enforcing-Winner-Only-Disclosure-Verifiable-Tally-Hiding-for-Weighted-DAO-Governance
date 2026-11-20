@@ -1,6 +1,6 @@
 use cgy_native::gate::{run_gate, verify_gate_json};
 use rayon::prelude::*;
-use std::{env, fs, io::{BufWriter, Write}};
+use std::{env, fs, io::{BufRead, BufWriter, Write}};
 use serde_json::Value;
 
 fn main() {
@@ -13,6 +13,80 @@ fn main() {
         let value: Value = serde_json::from_slice(&bytes).expect("parse transcript JSON");
         verify_gate_json(value.get("gate").unwrap_or(&value)).expect("gate verification failed");
         println!("RUST_VERIFIES_JS_GATE=PASS");
+        return;
+    }
+    if mode.as_deref() == Some("--public-proof-worker-stdin") {
+        let stdin = std::io::stdin();
+        let mut worker = None;
+        for line in stdin.lock().lines() {
+            let line = match line { Ok(line) => line, Err(error) => { println!("{{\"type\":\"ERROR\",\"message\":{}}}", serde_json::to_string(&error.to_string()).unwrap()); break; } };
+            let request: Value = match serde_json::from_str(&line) {
+                Ok(request) => request,
+                Err(error) => { println!("{{\"type\":\"ERROR\",\"message\":{}}}", serde_json::to_string(&error.to_string()).unwrap()); let _ = std::io::stdout().flush(); break; }
+            };
+            match request.get("type").and_then(Value::as_str) {
+                Some("INIT") => match cgy_native::gate::distributed_public_verifier_init(&request) {
+                    Ok(initialized) => {
+                        worker = Some(initialized);
+                        println!("{}", serde_json::json!({"type":"READY", "pid":std::process::id()}));
+                    }
+                    Err(error) => println!("{}", serde_json::json!({"type":"ERROR", "message":error})),
+                },
+                Some("VERIFY") => {
+                    let result: Result<(), String> = (|| {
+                        let worker = worker.as_ref().ok_or_else(|| "public verifier has not been initialized".to_owned())?;
+                        cgy_native::gate::verify_distributed_live_payload(worker, &request)
+                    })();
+                    match result {
+                        Ok(()) => println!("{}", serde_json::json!({"type":"RESULT", "requestId":request.get("requestId"), "valid":true})),
+                        Err(error) => println!("{}", serde_json::json!({"type":"ERROR", "requestId":request.get("requestId"), "message":error})),
+                    }
+                }
+                Some("STOP") => { println!("{}", serde_json::json!({"type":"STOPPED"})); let _ = std::io::stdout().flush(); break; }
+                _ => { println!("{}", serde_json::json!({"type":"ERROR", "message":"unknown public verifier request"})); let _ = std::io::stdout().flush(); break; }
+            }
+            let _ = std::io::stdout().flush();
+        }
+        return;
+    }
+    if mode.as_deref() == Some("--trustee-worker-stdin") {
+        let stdin = std::io::stdin();
+        let mut worker = None;
+        for line in stdin.lock().lines() {
+            let line = match line { Ok(line) => line, Err(error) => { println!("{{\"type\":\"ERROR\",\"message\":{}}}", serde_json::to_string(&error.to_string()).unwrap()); break; } };
+            let request: Value = match serde_json::from_str(&line) {
+                Ok(request) => request,
+                Err(error) => { println!("{{\"type\":\"ERROR\",\"message\":{}}}", serde_json::to_string(&error.to_string()).unwrap()); let _ = std::io::stdout().flush(); break; }
+            };
+            match request.get("type").and_then(Value::as_str) {
+                Some("INIT") => {
+                    match cgy_native::gate::distributed_trustee_init(&request) {
+                        Ok(initialized) => {
+                            let trustee_id = request.get("trusteeId").and_then(Value::as_u64).unwrap_or(0);
+                            worker = Some(initialized);
+                            println!("{}", serde_json::json!({"type":"READY", "trusteeId":trustee_id, "pid":std::process::id()}));
+                        }
+                        Err(error) => println!("{}", serde_json::json!({"type":"ERROR", "message":error})),
+                    }
+                    let _ = std::io::stdout().flush();
+                }
+                Some("TASK") => {
+                    let result: Result<Value, String> = (|| {
+                        let worker = worker.as_ref().ok_or_else(|| "native trustee has not been initialized".to_owned())?;
+                        let phase = request.get("phase").and_then(Value::as_str).ok_or_else(|| "trustee phase missing".to_owned())?;
+                        let context = request.get("context").ok_or_else(|| "trustee phase context missing".to_owned())?;
+                        cgy_native::gate::distributed_trustee_phase(worker, phase, context)
+                    })();
+                    match result {
+                        Ok(result) => println!("{}", serde_json::json!({"type":"RESULT", "taskId":request.get("taskId"), "result":result})),
+                        Err(error) => println!("{}", serde_json::json!({"type":"ERROR", "taskId":request.get("taskId"), "message":error})),
+                    }
+                    let _ = std::io::stdout().flush();
+                }
+                Some("STOP") => { println!("{{\"type\":\"STOPPED\"}}"); let _ = std::io::stdout().flush(); break; }
+                _ => { println!("{{\"type\":\"ERROR\",\"message\":\"unknown trustee worker request\"}}"); let _ = std::io::stdout().flush(); break; }
+            }
+        }
         return;
     }
     if mode.as_deref() == Some("--gate-stdin") {

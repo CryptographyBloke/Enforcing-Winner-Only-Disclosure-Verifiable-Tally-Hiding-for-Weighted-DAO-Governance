@@ -1,0 +1,10 @@
+[package]
+name = "cgy-crypto"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+ark-ec = "0.6.0"
+ark-ff = "0.6.0"
+taceo-ark-babyjubjub = "0.6.0"

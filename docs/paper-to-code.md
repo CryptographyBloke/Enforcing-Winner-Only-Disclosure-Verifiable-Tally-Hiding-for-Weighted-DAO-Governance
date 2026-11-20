@@ -7,7 +7,7 @@
 | Registered-root, nullifier, and board admission | [`contracts/arbitrum/contracts/StrongN8Poll.sol`](../contracts/arbitrum/contracts/StrongN8Poll.sol), [`protocol/src/accepted_board.js`](../protocol/src/accepted_board.js) |
 | Canonical accepted-board encoding | [`contracts/arbitrum/board_binding/lib/`](../contracts/arbitrum/board_binding/lib), [`protocol/src/broadcast_board.js`](../protocol/src/broadcast_board.js) |
 | Threshold setup and partial decryption checks | [`protocol/src/threshold_setup.js`](../protocol/src/threshold_setup.js), [`protocol/src/threshold_decryption.js`](../protocol/src/threshold_decryption.js) |
-| CGY conditional gate and transcript | [`protocol/src/conditional_gate.js`](../protocol/src/conditional_gate.js), [`native/src/gate.rs`](../native/src/gate.rs) |
+| CGY conditional gate and transcript | [`protocol/src/conditional_gate.js`](../protocol/src/conditional_gate.js), [`native/crates/protocol/src/gate.rs`](../native/crates/protocol/src/gate.rs) |
 | Weighted aggregation and threshold comparison DAG | [`protocol/src/arithmetic.js`](../protocol/src/arithmetic.js), [`native/tools/native_arithmetic_scheduler.js`](../native/tools/native_arithmetic_scheduler.js) |
 | Five-of-five result-only release | [`protocol/src/final_release.js`](../protocol/src/final_release.js) |
 | Local full-scale runner and public replay | [`protocol/scripts/run_local_scale.js`](../protocol/scripts/run_local_scale.js), [`protocol/scripts/replay_local_run.js`](../protocol/scripts/replay_local_run.js) |

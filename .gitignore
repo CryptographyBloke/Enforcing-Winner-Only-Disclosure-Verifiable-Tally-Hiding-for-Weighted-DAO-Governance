@@ -15,6 +15,12 @@ circuits/build/
 # Fresh experiment output. Only the explanatory README is tracked.
 /runs/*
 !/runs/README.md
+/runs-private/
+**/trustee-private/
+**/*.private.json
+**/trustee-config*.json
+**/*secret-share*.json
+**/authentication-private*
 
 # Credentials, keys, seeds, witnesses, and private oracle state
 .env

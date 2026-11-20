@@ -80,6 +80,17 @@ NETWORK-02 将已有受托方签名消息通过五个 TCP 客户端进程发送�
 
 下载[NETWORK-02 公共证据包](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/releases/tag/network-02-tcp-transport-v1)。包内索引记录了每个导出文件的 SHA-256。
 
+## Rust 原生迁移分支
+
+[`refactor/rust-native-distributed` 分支](https://github.com/CryptographyBloke/Enforcing-Winner-Only-Disclosure-Verifiable-Tally-Hiding-for-Weighted-DAO-Governance/tree/refactor/rust-native-distributed)开始把 CGY 密码学、认证 TCP board、trustee worker、公开回放、选票信号解码、只读链访问和证据哈希迁入 Rust workspace。Windows 上可执行：
+
+```powershell
+cargo test --workspace --locked --manifest-path native/Cargo.toml
+cargo build --workspace --release --locked --manifest-path native/Cargo.toml
+```
+
+这是实验性迁移。Rust 已具备 trustee 本地 CGY worker 和会验证证明的 TCP board；完整选票流程仍使用 JavaScript Circom/snarkjs 生成及接纳证明，并沿用现有 DAG scheduler。Rust ballot crate 目前只校验原有的 37 个公开信号布局，不生成或验证 Groth16 证明。当前 CLI 与迁移边界见 [Rust 迁移说明](docs/rust-migration.md)。
+
 ## 安全范围
 
 论文证明了即使受托方恶意也不会接受错误结果，并证明少于五个解密份额的静态主动攻击者集合无法获知 tally；winner-only disclosure 推论针对实际封存的 board。实现中的五个受托方角色位于同一进程，使用测试专用 setup；这不是分布式密钥生成仪式，也不是生产部署。详见[安全模型](docs/security-model.md)。
@@ -93,7 +104,7 @@ NETWORK-02 将已有受托方签名消息通过五个 TCP 客户端进程发送�
 | 路径 | 内容 |
 |---|---|
 | [`protocol/`](protocol/package.json) | JavaScript 协议、选票编排、公共重放与测试 |
-| [`native/`](native/Cargo.toml) | Rust CGY gate 引擎、调度器和 transcript 工具 |
+| [`native/`](native/Cargo.toml) | Rust workspace：CGY 密码学/协议、trustee、board、coordinator、verifier 和 runner |
 | [`circuits/`](circuits/package.json) | Circom 选票关系和锁定的 circuit 依赖 |
 | [`contracts/arbitrum/`](contracts/arbitrum/package.json) | Arbitrum 选票合约、board 绑定、fixtures 和 Hardhat 测试 |
 | [`configs/reference/`](configs/reference/five_of_five_n8.json) | 五取五参数和本地实验规模 |

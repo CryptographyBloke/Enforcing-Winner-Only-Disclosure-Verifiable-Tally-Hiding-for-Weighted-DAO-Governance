@@ -1,0 +1,9 @@
+[package]
+name = "cgy-chain"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+serde_json = { version = "1.0.151", features = ["preserve_order"] }
+ureq = { version = "2.12.1", features = ["json"] }

@@ -4,16 +4,28 @@ version = "0.1.0"
 edition = "2024"
 publish = false
 
+[workspace]
+resolver = "2"
+members = [
+    ".",
+    "crates/crypto",
+    "crates/protocol",
+    "crates/network",
+    "crates/ballot",
+    "crates/chain",
+    "crates/evidence",
+]
+
 [dependencies]
-ark-ec = "0.6.0"
-ark-ff = "0.6.0"
-taceo-ark-babyjubjub = "0.6.0"
-num-bigint = "0.4.8"
-sha3 = "0.10.8"
-sha2 = "0.10.9"
+cgy-crypto = { path = "crates/crypto" }
+cgy-protocol = { path = "crates/protocol" }
+cgy-network = { path = "crates/network" }
+cgy-ballot = { path = "crates/ballot" }
+cgy-chain = { path = "crates/chain" }
+cgy-evidence = { path = "crates/evidence" }
 serde_json = { version = "1.0.151", features = ["preserve_order"] }
-hex = "0.4.3"
+serde = { version = "1.0.228", features = ["derive"] }
 rayon = "1.11.0"
-rand = "0.8.8"
 
 [dev-dependencies]
+hex = "0.4.3"

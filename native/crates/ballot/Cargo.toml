@@ -1,0 +1,9 @@
+[package]
+name = "cgy-ballot"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+cgy-crypto = { path = "../crypto" }
+serde = { version = "1.0.228", features = ["derive"] }
