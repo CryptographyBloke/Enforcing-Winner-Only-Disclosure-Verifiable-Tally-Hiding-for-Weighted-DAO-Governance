@@ -1,0 +1,11 @@
+
+> winner-only-disclosure-arbitrum@1.0.0 test
+> hardhat test --no-compile test/RustBallotVerifier.test.js
+
+
+
+  Rust-generated ballot proof compatibility
+    √ accepts every ballot using the unchanged Solidity Groth16 verifier (3232ms)
+
+
+  1 passing (3s)

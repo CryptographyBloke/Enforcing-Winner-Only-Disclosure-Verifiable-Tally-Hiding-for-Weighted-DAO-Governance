@@ -89,7 +89,7 @@ cargo test --workspace --locked --manifest-path native/Cargo.toml
 cargo build --workspace --release --locked --manifest-path native/Cargo.toml
 ```
 
-This is an experimental migration. The Rust `ballot` binary now uses `ark-circom` to evaluate the unchanged Circom WASM witness, reads the original SnarkJS `.zkey`, creates Groth16 proofs in Rust, and checks all 37 public signals. Three fresh release-mode n=8 proof runs were accepted by the unchanged Solidity verifier in the local Hardhat EVM. This is ballot-level compatibility evidence; admission, the weighted DAG runner, full distributed gate execution, replay, and oracle comparison still use the existing JavaScript path. Rust-only end-to-end voting is not complete. The prover needs a matched WASM, R1CS, `.zkey`, and verification key; these setup artifacts are not committed. See the [Rust migration notes](docs/rust-migration.md) for commands and the exact boundary.
+This is an experimental migration. The Rust `ballot` binary uses `ark-circom` with the unchanged Circom WASM and original SnarkJS `.zkey`. Fresh release-mode runs at n=8, 64, 256 and 1,024 passed Rust replay and the unchanged Solidity verifier in a local Hardhat EVM. This covers ballot proving and verification; admission, encrypted tally gates, trustee execution, final release, and oracle comparison are not part of these runs. Full Rust end-to-end voting is still in progress. The prover needs matching WASM, R1CS, `.zkey`, and verification key artifacts, which are not committed. See the [Rust migration notes](docs/rust-migration.md) and [RUST-02 results](reports/RUST-02.md).
 
 ## Security scope
 

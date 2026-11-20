@@ -89,7 +89,7 @@ cargo test --workspace --locked --manifest-path native/Cargo.toml
 cargo build --workspace --release --locked --manifest-path native/Cargo.toml
 ```
 
-这是实验性迁移。Rust `ballot` 程序现在使用 `ark-circom` 执行原 Circom WASM witness，读取原 SnarkJS `.zkey`，并在 Rust 中生成 Groth16 证明、检查全部 37 个公开信号。三次 release 模式 n=8 新鲜证明运行中的 24 张 ballot 均通过本地 Hardhat EVM 内未修改的 Solidity verifier。这是选票证明层的兼容性结果；admission、加权 DAG、完整分布式 gate、replay 和 oracle 比较仍在现有 JavaScript 流程中，Rust-only 端到端投票尚未完成。Rust prover 需要匹配的 WASM、R1CS、`.zkey` 和 verification key；这些 setup 产物没有提交到仓库。命令和迁移边界见 [Rust 迁移说明](docs/rust-migration.md)。
+这是实验性迁移。Rust `ballot` 程序使用 `ark-circom` 执行原 Circom WASM witness，并读取原 SnarkJS `.zkey`。release 模式下 n=8、64、256、1024 的新鲜 ballot 均通过 Rust replay 和本地 Hardhat EVM 中未修改的 Solidity verifier。这些实测覆盖 ballot proving/verification；不含 admission、加密计票 gate、trustee 执行、final release 和 oracle comparison。完整 Rust-only 投票仍在迁移中。Prover 需要匹配的 WASM、R1CS、`.zkey` 和 verification key，这些 artifact 没有提交。详见 [Rust 迁移说明](docs/rust-migration.md) 和 [RUST-02 实测报告](reports/RUST-02.md)。
 
 ## 安全范围
 

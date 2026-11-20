@@ -1,0 +1,55 @@
+{
+  "schema": "rust-ballot-run-v1",
+  "run_id": "rust02_ballot_scale_n1024_5a6207c4",
+  "created_at_utc": "2026-11-20T06:21:12.2783995Z",
+  "rust_source_commit": "77eb405",
+  "solidity_test_commit": "64e3815",
+  "source_tree_clean_at_rust_run": true,
+  "mode": "rust-native-ballot-proving-only",
+  "execution": "local",
+  "rust_proving_required_node": false,
+  "node_used_for_solidity_check": true,
+  "os": "Microsoft Windows 11 专业版",
+  "cpu": "Intel(R) Core(TM) i7-14650HX",
+  "toolchain": {
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)"
+  },
+  "parameters": {
+    "gate_count": 0,
+    "public_signals_per_ballot": 37,
+    "plaintext_inputs": "synthetic, omitted from export",
+    "note": "No ballot admission, encrypted tally DAG, trustee execution, or final decision release in this run.",
+    "ballots": 1024,
+    "weight_bits": 8
+  },
+  "crypto_artifacts": {
+    "r1cs_sha256": "ED87C61814D64020CADC29B0DD7BEFDABD735DD163FB1D676C93051FBC342727",
+    "wasm_sha256": "44C8ACFC902A6A89A1EB44D17D5660FB365D2B296009842B5186E907C444D838",
+    "zkey_sha256": "6D80E0822F72C3F5613D02E9BD907DE33CF50C4BD21C3470139C31DA6AE28E4C",
+    "verification_key_sha256": "548D5FF2673E10CCE2029F3CA6D4FD90BF325A0A605384C877691828602063BF",
+    "rust_ballot_binary_sha256": "1234B7169A285C19C89A49526A4EBAB5437DEAB80E914B08C78D530AC7ECD722",
+    "origin": "Historical local artifact archive; not included in blocksys2027-evidence-v1 or repository checkout."
+  },
+  "timings_ms": {
+    "groth16_verification": 5439.882,
+    "groth16_proving": 252062.074,
+    "ballot_pipeline": 593768.182,
+    "command_wall": 607157.981,
+    "witness_generation": 329208.627
+  },
+  "verification": {
+    "rust_groth16": "PASS",
+    "oracle_comparison": "NOT_RUN",
+    "rust_public_replay": "PASS",
+    "full_protocol": "NOT_RUN",
+    "solidity_verifier": "PASS"
+  },
+  "artifacts": {
+    "public_bundle_sha256": "E1A2B626E227FE644649DA15FC7D5F143F13C5671A1656A154EB1AF3E8CBD926",
+    "public_bundle": "ballots.json",
+    "prove_log_sha256": "E53003F5F402BF764D3DA0ECA8852C709273BE29404115A1B43C3FC26761FF4D",
+    "solidity_log_sha256": "2C97948C9049101B629BA1F6AD4568BFCA47B0CED5CAFC5237D30F19E1D35F25",
+    "replay_log_sha256": "74B7E548584CDD50E05940A15A0DA5355650AD0E3A9DEC398532D53B27D564F9"
+  },
+  "private_inputs": "runs-private/<run-id>/prove-config.json; no witness or plaintext votes exported"
+}

@@ -42,23 +42,24 @@ Rust 当前还没有接通完整 admission/accepted-board 构造、加权 tally 
 
 ## 5. n=64 与更大规模
 
-n=64 全协议没有运行。n=256 和 n=1024 全协议没有运行。本次的 ballot 生成代码保留了 1–1024 注册树容量，但这不代表大规模 proof/tally pipeline 已通过验证。
+Rust ballot-only proving/replay 已实跑 n=64、n=256、n=1024；所有 ballot proof 均通过 Rust verification、Rust bundle replay 和本地 EVM 中的原 Solidity verifier。完整 Rust n=64、n=256、n=1024 tally 均未运行；这些结果不包含 admission、CGY gates、trustee execution、final release 或 oracle。
 
 ## 6. ballot 阶段的实测结果
 
-环境：Windows 11 专业版，Intel Core i7-14650HX（16 核/24 逻辑线程），rustc/cargo 1.98.1。release Rust 命令生成 8 张新 ballot；三次使用相同程序、匹配的原 key、weight `[3,5,7,9,11,13,15,17]` 和交替 vote 输入，凭据、poll ID 与 proof 随机数每次新生成。
+环境：Windows 11 专业版，Intel Core i7-14650HX（16 核/24 逻辑线程），rustc/cargo 1.98.1。n=8 做三次新鲜 ballot 批次；n=64、256、1024 各做一次。所有尺寸都用 release Rust CLI、相同匹配的原 key 和八位 weight 配置；每次生成新身份、poll ID 和 proof 随机数。明文测试输入未导出。
 
 时间为每次 n=8 批次总计，单位秒：
 
-| 阶段 | 三次结果范围 | 中位数 |
-|---|---:|---:|
-| Witness 生成 | 2.726–2.974 | 2.872 |
-| Groth16 proving | 2.023–2.064 | 2.048 |
-| Rust Groth16 verification | 0.042–0.043 | 0.042 |
-| Ballot pipeline（以上每票处理阶段合计） | 4.880–5.102 | 5.043 |
-| `ballot prove` 命令墙钟时间 | 10.901–11.102 | 11.005 |
+| n | Witness 生成 | Groth16 proving | Rust 验证 | ballot pipeline | 命令墙钟 | proof replay / Solidity |
+|---:|---:|---:|---:|---:|---:|:---:|
+| 8 | 2.872 | 2.048 | 0.042 | 5.043 | 11.005 | PASS / PASS |
+| 64 | 21.788 | 15.894 | 0.339 | 38.491 | 44.802 | PASS / PASS |
+| 256 | 83.035 | 63.210 | 1.365 | 149.407 | 157.131 | PASS / PASS |
+| 1,024 | 329.209 | 252.062 | 5.440 | 593.768 | 607.158 | PASS / PASS |
 
-命令墙钟包含程序启动、Circom WASM/R1CS 与 `.zkey` 初始化、注册树生成、witness、证明和 Rust 验证；不含 Cargo 编译、之后单独运行的 Solidity 测试，也不含 admission/tally/release。中位 Groth16 proving 时间约为每票 0.256 秒。Rust 在这部分确实很快；完整分布式 tally 时间仍不能据这组 ballot 阶段数据推断。论文 Q5 的历史 n=8 `proving=10.04 s` 使用了不同版本和计时边界，本报告不把两者当作受控对比，也不据此改论文数据。
+命令墙钟包含程序启动、Circom WASM/R1CS 与 `.zkey` 初始化、注册树生成、witness、证明和 Rust 验证；不含 Cargo 编译、之后单独运行的 Solidity 测试，也不含 admission/tally/release。n=1024 的 Rust proving 核心为 252.1 秒，完整 ballot 命令为 607.2 秒。Rust 在这段 proving 路径上有实测结果；这不是完整 election 的耗时。论文 Q5 的历史 proving 表采用不同实现和计时边界，不能与本表直接作倍率结论，也不据此改论文数据。
+
+Hardhat EVM 对每个批次中的全部 proof 逐张调用原 verifier；本地测试耗时约为 n=8 0.4 秒、n=64 1.0 秒、n=256 3.2 秒、n=1024 11.9 秒。这些时间是 verifier 测试阶段，不计入 Rust proving 命令墙钟。
 
 ## 7. 网络测量与模型对照
 
@@ -71,7 +72,7 @@ NETWORK-02 是中央生成 transcript 后的传输重放；NETWORK-03 是 Rust t
 - Rust workspace 单元/集成测试：20 passed，0 failed。
 - `protocol` JavaScript 回归：57 passed，0 failed。
 - Hardhat 全套：51 passed，1 pending。pending 项是需显式设置 `CGY_RUST_BALLOT_BUNDLE` 的可选 Rust proof 测试。
-- 对三次 bundle 分别运行可选 Hardhat 测试：每次 1 passed；每组八张 proof 均被本地 EVM 的原 `Groth16Verifier` 接受。
+- 对 n=8、64、256、1024 的每个 bundle 运行可选 Hardhat 测试：每次 1 passed；对应的 8、64、256、1024 张 proof 全部被本地 EVM 的原 `Groth16Verifier` 接受。
 - 篡改第一张 ballot 的 nullifier 后，Rust verifier 返回非零状态并输出 `Groth16 proof rejected`。
 - Rust 单元测试拒绝错误 proof system、截断 proof 坐标、非 canonical public scalar、超范围 uint8 weight 和错误公开信号布局。
 - `git check-ignore` 确认 `runs/` 与 `runs-private/` 被忽略。公开 bundle 的字段仅含 registry/poll/committee context、proof、37 个公开信号及阶段耗时；没有 vote 数组、identity secret、witness、share、auth key 或 oracle 输入。每份公开日志已移除本机绝对路径。
@@ -80,13 +81,16 @@ NETWORK-02 是中央生成 transcript 后的传输重放；NETWORK-03 是 Rust t
 
 ## 9. 公共证据、哈希与复现命令
 
-三组可公开验证产物位于 `evidence/rust02-ballot-proving/`。对应 Rust source commit 为 `75349fd8c7c0987e7ce01582b433bb42353d75a6`，每个 manifest 均记录该 SHA 和 `source_tree_clean=true`。
+六组可公开验证产物位于 `evidence/rust02-ballot-proving/`：三次 n=8 批次，以及 n=64、n=256、n=1024 各一次。n=8 source commit 为 `75349fd8c7c0987e7ce01582b433bb42353d75a6`；较大规模 ballot run 使用 Rust source commit `77eb405`、Solidity 测试 harness commit `64e3815`。每个 manifest 记录源版本、artifact hashes 和阶段结果。
 
 | Run | Ballot bundle SHA-256 | Manifest SHA-256 |
 |---|---|---|
 | `rust02_ballot_release_n8_r1_1cbdc4c8` | `D8D9C21E9A4CA641EFEFCFF6E20C5B74D7C2B521122A4EAB53B7ED6883F0E313` | `1F299687CA2FA6658D1816FD86A3ABA022130775839A6B477296D18F07D62971` |
 | `rust02_ballot_release_n8_r2_5cca7a54` | `B3F7F53FA12B812026EB66C63E4FB891F755627D60D91AD71AD5B06703121B3F` | `077F93E7F7720671AA6680CE958DF6A9984DA61F3897B212FF194280A601973B` |
 | `rust02_ballot_release_n8_r3_a9ffd487` | `328D95B81E1EA19876C101A800876B6334C4739621E4024989E8EB5B09508CD5` | `7E76F1A862C8E67AF7B3923CDA60E21E2294260044E9B0AF8C830E3B5094A605` |
+| `rust02_ballot_scale_n64_5b225fb6` | `25579CD3E1CE9B2149C840FA39B50757504031C26D76A67B355AD20BADD662CF` | `75AC6655A5D7202CBF9F8115F0D951AF032748FDE7F0ECEFE67D2FC01E8A68BE` |
+| `rust02_ballot_scale_n256_461878b7` | `9AD9A3E7C74FA57A51B6B3372B42128DD51C3EE0316D58B9ABDF84F69C6E980E` | `CE727E2D7D0FA70D27D99A71B6C7B6EC42733C54AE77EF84B95263958CE1C3CB` |
+| `rust02_ballot_scale_n1024_5a6207c4` | `E1A2B626E227FE644649DA15FC7D5F143F13C5671A1656A154EB1AF3E8CBD926` | `B93A7E4DE48018ABC9B968AE8093271C68D65A36861CD39CACBBA3D89E874C42` |
 
 输入 artifact 哈希：`.zkey` `6D80E0822F72C3F5613D02E9BD907DE33CF50C4BD21C3470139C31DA6AE28E4C`；verification key `548D5FF2673E10CCE2029F3CA6D4FD90BF325A0A605384C877691828602063BF`；R1CS `ED87C61814D64020CADC29B0DD7BEFDABD735DD163FB1D676C93051FBC342727`；WASM `44C8ACFC902A6A89A1EB44D17D5660FB365D2B296009842B5186E907C444D838`。Poseidon 常量文件 `native/crates/ballot/data/poseidon_t2_t3.json` SHA-256 为 `A68B352737646F641533D6BA6CFA160724AB28918743198A87A17AD41D357C34`。
 
