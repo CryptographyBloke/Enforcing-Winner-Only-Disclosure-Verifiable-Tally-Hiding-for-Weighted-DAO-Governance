@@ -117,7 +117,7 @@ Remove-Item Env:CGY_RUST_BALLOT_BUNDLE
 
 ## 11. GitHub 分支与历史版本
 
-本地工作分支为 `refactor/rust-native-distributed`；Rust ballot implementation commit 为 `75349fd8c7c0987e7ce01582b433bb42353d75a6`，较大规模测量对应 Rust source commit `77eb405` 与 Solidity harness commit `64e3815`，包含六组证据的报告提交为 `a6155dc`。GitHub CLI 已认证为仓库所有者，但 `git push origin refactor/rust-native-distributed` 和 HTTP/1.1 重试均因 GitHub HTTPS 连接重置/超时而失败；远端分支仍在基线 `db9c9a8c603dcc501b7005bd8f211001e5fa90b6`，因此当前没有包含本次改动的远端分支或 PR。没有修改 `main`，也没有覆盖或删除 `blocksys2027-evidence-v1`、`network-02-tcp-transport-v1` 或历史 Q5 数据。
+本地分支 `refactor/rust-native-distributed` 已成功推送到 GitHub。最终重试将远端从 RUST-01 基线 `db9c9a8c603dcc501b7005bd8f211001e5fa90b6` 更新到包含本次 ballot 实现、六组证据与报告的提交链（推送前本地 head `a4938ee`）；之前两次 HTTPS 推送因连接重置/超时失败。Rust ballot implementation commit 为 `75349fd8c7c0987e7ce01582b433bb42353d75a6`，较大规模测量对应 Rust source commit `77eb405` 与 Solidity harness commit `64e3815`。没有合并到 `main`，也没有覆盖或删除 `blocksys2027-evidence-v1`、`network-02-tcp-transport-v1` 或历史 Q5 数据。
 
 ## 12. 仍待完成的主要工作
 
