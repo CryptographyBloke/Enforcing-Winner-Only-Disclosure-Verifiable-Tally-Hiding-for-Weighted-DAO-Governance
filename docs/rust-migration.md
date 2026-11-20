@@ -13,7 +13,7 @@ Branch: `refactor/rust-native-distributed`. The Rust workspace lives in `native/
 | `cgy-chain` | Read-only Ethereum JSON-RPC calls for chain ID, receipts, and logs. The API has no transaction submission method. |
 | `cgy-evidence` | SHA-256 artifact manifests and a public-export path filter. |
 
-The binaries are `cgy-native` (compatibility entry point), `trustee`, `coordinator`, `board`, `verifier`, and `runner`. A trustee loads one share and one Ed25519 seed from its own private config file. The coordinator passes config paths to child processes and does not open them. Each trustee creates its contribution and signature in its own process. The board validates the signature and the Rust CGY proof before durably sealing the scheduled contributor set. The board is a trusted sequencer.
+The binaries are `cgy-native` (compatibility entry point), `trustee`, `coordinator`, `board`, `verifier`, `runner`, and `ballot`. A trustee loads one share and one Ed25519 seed from its own private config file. The coordinator passes config paths to child processes and does not open them. Each trustee creates its contribution and signature in its own process. The board validates the signature and the Rust CGY proof before durably sealing the scheduled contributor set. The board is a trusted sequencer.
 
 ## Build and current commands
 
